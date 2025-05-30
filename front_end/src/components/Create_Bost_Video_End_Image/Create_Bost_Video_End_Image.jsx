@@ -10,7 +10,9 @@ import axios from "axios";
 import Loading_button from "../Loading_button/Loading_button";
 import Info_menu from "../Info_menu/Info_menu";
 import Shools from "../Shools/Shools";
+import { useQueryClient } from "@tanstack/react-query";
 const Create_Bost_Video_and_image = () => {
+  const queryClient = useQueryClient();
   const [formErrors, setFormErrors] = useState({});
   const [cookies] = useCookies(["token"]);
   const navigate = useNavigate();
@@ -85,7 +87,7 @@ const Create_Bost_Video_and_image = () => {
       );
 
       console.log("تم الإرسال:", response.data);
-
+queryClient.invalidateQueries(["AllPost"]);
       // ✅ تصفية الفورم بعد الإرسال
       setImageFiles([]);
       setVideoFiles([]);

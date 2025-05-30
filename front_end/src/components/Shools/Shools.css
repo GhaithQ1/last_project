@@ -42,6 +42,7 @@ border-bottom: 1px solid var(--hover-color);
 display: flex;
 align-items: center;
 gap: 10px;
+cursor: pointer;
 }
 .schoolss .main_info .info_schools img{
 width: 40px;

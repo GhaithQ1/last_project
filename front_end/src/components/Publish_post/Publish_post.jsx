@@ -5,7 +5,9 @@ import "./Publish_post.css"
 
 import { useNavigate } from "react-router-dom";
 import { useMyData } from '../UseMydata';
+import { useQueryClient } from "@tanstack/react-query";
 const Publish_post = () => {
+  const queryClient = useQueryClient();
   const {data:MyData} = useMyData();
   const [cookies, setCookies] = useCookies(["token"]);
 
@@ -90,15 +92,13 @@ const Publish_post = () => {
       );
 
       console.log("تم الإرسال:", response.data);
-
+queryClient.invalidateQueries(["AllPost"]);
       // ✅ تصفية الفورم بعد الإرسال
       setImageFiles([]);
       setVideoFiles([]);
       Setrqs1("");
       imageInputRef.current.value = "";
       videoInputRef.current.value = "";
-
-      window.location = '/'
       setLoad_butt(false);
     } catch (err) {
       if (err.response?.data?.errors) {

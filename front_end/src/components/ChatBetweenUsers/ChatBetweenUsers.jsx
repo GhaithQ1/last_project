@@ -320,6 +320,7 @@ const ChatBetweenUsers = () => {
           position: "relative",
           scrollbarWidth: "none",
           msOverflowStyle: "none",
+          height:"100%",
         }}>
           <div className="chat-box" ref={chatBoxRef}>
             <div className="header_chat">

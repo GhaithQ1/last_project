@@ -2,33 +2,22 @@ import React, { useEffect, useState, useRef, use, useTransition, useOptimistic, 
 import { createPortal } from "react-dom";
 import axios from "axios";
 import "./Bosts.css";
-
-import { Relod_like } from "../Relod_like/Relod_like";
 import { format } from 'date-fns';
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import {
   faCheck,
   faTimes,
-  faHeart,
-  faComment,
-  faBookmark,
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { useCookies } from "react-cookie";
 import { Relod_post } from "../Relod_post/Relod_post";
-import Loading_main from "../Loading_Main/Loading_main";
-import Slider from "react-slick";
-import Loading_coment from "../Loading_coment/Loading_coment";
-import Loading_Bookmark from "../Loading_Bookmark/Loading_Bookmark";
 import Loading_Filter_post from "../Loading_Filter_post/Loading_Filter_post";
-
-import { useUser } from "../Context";
 import { useMyData } from "../UseMydata";
-
+import { useAllPost } from "../UseAllPost";
+import { useQueryClient } from "@tanstack/react-query";
 // Facebook-like Modal Gallery Component
 const MediaGalleryModal = ({
   isOpen,
@@ -112,10 +101,7 @@ const MediaGalleryModal = ({
 };
 
 const Bosts = () => {
-  const [isPending, startTransitions] = useTransition(); // 👈 React 19 feature
-
-  const audioRefs = useRef([]);
-  const [posts, setPosts] = useState([]);
+  const queryClient = useQueryClient();
   const [galleryModalOpen, setGalleryModalOpen] = useState(false);
   const [galleryMedia, setGalleryMedia] = useState([]);
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
@@ -123,20 +109,24 @@ const Bosts = () => {
   const inputRef = useRef();
   const [NewComment, SetNewComment] = useState([]);
   const [showCommentForPostId, setShowCommentForPostId] = useState(null);
-  const [liked, setLiked] = useState([]);
   const [likeds, setLikeds] = useState(false);
-  const [bookMark, setbookMark] = useState("");
-
+  const [id_comment, setId_comment] = useState("")
 
 
   // const [Mydata, SetMydata] = useState();
-  const {data} = useMyData();
-      const Mydata = data?._id
-      const Mydata_comment = data
-      const bookId = data?.savedPosts
-      const solvedPost_2 = data?.solvedPost_2
-      const solvedPost_3 = data?.solvedPost_3
-      const solvedPost_4 = data?.solvedPost_4
+  const { data: getmydata } = useMyData();
+  const Mydata = getmydata?._id
+  const Mydata_comment = getmydata
+  const bookId = getmydata?.savedPosts
+  const solvedPost_2 = getmydata?.solvedPost_2
+  const solvedPost_3 = getmydata?.solvedPost_3
+  const solvedPost_4 = getmydata?.solvedPost_4
+
+
+  const { data: getallpost, isLoading, isFetching } = useAllPost();
+
+  const posts = getallpost;
+  const AllComment = getallpost?.filter((item) => id_comment === item._id)[0]?.comments || [];
 
 
 
@@ -145,29 +135,15 @@ const Bosts = () => {
 
 
 
-
-
-  
 
   const [lod, setlod] = useState(false);
-  const [selectedAnswers, setSelectedAnswers] = useState({});
-  const [Relod_likee, setRelod_likee] = useState(false);
-  const [Relod_likeeid, setRelod_likeeid] = useState([]);
-  const [active_likeeid, setActive_likeeid] = useState(false);
+
   const bottomRef = useRef(null);
 
   const [relod, setrelod] = useState(false);
 
-  const [relod_1, setrelod_1] = useState(false);
-  const [relod_coment, setrelod_coment] = useState(false);
-  const [relod_Bookmark, setrelod_Bookmark] = useState(false);
 
-  const { type_post } = useUser();
-  const { type_post_role } = useUser();
 
-  const playSound = (index) => audioRefs.current[index].play();
-  const [id_comment, setId_comment] = useState("")
-  const [AllComment, SetAllComment] = useState([])
   const formruf = useRef();
   const [optimisticComment, addOptimisticComment] = useOptimistic(
     AllComment, (state, newComment) => [...state, newComment]);
@@ -202,37 +178,8 @@ const Bosts = () => {
     }
   };
 
-  useEffect(() => {
-    setrelod_1(true);
-  }, []);
-
-  useEffect(() => {
-    startTransitions(async () => {
-
-      try {
-        const res = await axios.get(`http://localhost:8000/api/v2/post?type=${type_post}&role=${type_post_role}`, {
-          headers: { Authorization: `Bearer ${cookies.token}` },
-        });
-        const newMessages = res.data.data;
-        setPosts(res.data.data);
-        SetAllComment(
-          res.data.data
-            .filter((item) => id_comment === item._id)[0]?.comments || []
-        );
 
 
-        setRelod_likee(false);
-        setrelod_1(false);
-        setrelod_Bookmark(false);
-
-      } catch (error) {
-        console.error("Error fetching data", error);
-      }
-
-
-    })
-
-  }, [NewComment, type_post, type_post_role, id_comment]);
 
   const handleCommentClick = (postId) =>
     setShowCommentForPostId(showCommentForPostId === postId ? null : postId);
@@ -243,9 +190,9 @@ const Bosts = () => {
 
 
   const Likes = async (post) => {
-    console.log(Relod_likeeid)
+
     try {
-      setRelod_likee(true);
+
       await axios.post(
         `http://localhost:8000/api/v2/post/toggle_post_like/${post._id}`,
         {},
@@ -258,13 +205,9 @@ const Bosts = () => {
       console.error("Error fetching data", error);
     }
   };
-  const handleBook = (id) => setbookMark(id);
-
-
 
   const bookMarks = async (id) => {
     try {
-      setrelod_Bookmark(true);
       await axios.post(
         `http://localhost:8000/api/v2/auth/toggleSavedPost/${id}`,
         {},
@@ -272,6 +215,7 @@ const Bosts = () => {
           headers: { Authorization: `Bearer ${cookies.token}` },
         }
       );
+      queryClient.invalidateQueries(['myData'])
     } catch (error) {
       console.error("Error fetching data", error);
     }
@@ -428,7 +372,6 @@ const Bosts = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       document.body.style.overflow = "";
-      SetAllComment([])
     };
   }, [showCommentForPostId]);
 
@@ -477,7 +420,9 @@ const Bosts = () => {
     }
   }, []);
   return (
+
     <div className="bosts">
+      {isFetching &&  <Loading_Filter_post />}
       {/* Modal Gallery Component */}
       <MediaGalleryModal
         isOpen={galleryModalOpen}
@@ -488,9 +433,9 @@ const Bosts = () => {
       />
 
       {/* عرض البوستات حسب النوع */}
-      {isPending && <Loading_Filter_post />}
 
-      {Mydata && (posts.map((post, index) => {
+
+      {Mydata && (posts?.map((post, index) => {
         if (post.type === "post_1") {
           const itemsPerPage = 2;
 
@@ -681,7 +626,7 @@ const Bosts = () => {
                     <span>Comment</span>
                   </div>
                   <div className="infotest">
-                    <svg className="inter-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" /></svg>
+                    <svg className="inter-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" /></svg>
                     <span>Share</span>
                   </div>
 
@@ -706,7 +651,7 @@ const Bosts = () => {
                             ? "active_book"
                             : ""
                           }`}
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z" /></svg>
+                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z" /></svg>
                       <span>Save</span>
                     </div>
                   }
@@ -860,13 +805,23 @@ const Bosts = () => {
                       }));
                     }
                   };
-                  const handleAnswer = (questionId, answer) => {
+                  const handleAnswer = async (questionId, answer) => {
                     setLocalAnswers((prev) => ({
                       ...prev,
                       [questionId]: answer,
                     }));
-                    chick_post_2(post._id, questionId, answer); // لازم نستناه
+
+                    try {
+                      await chick_post_2(post._id, questionId, answer);
+                      // ما تعمل refetch أو invalidateQueries هون، أو:
+                      queryClient.invalidateQueries(['AllPost']);
+
+                      setrelod(false);
+                    } catch (error) {
+                      console.error("فشل تحديث الجواب:", error);
+                    }
                   };
+
 
                   return (
                     <>
@@ -1009,7 +964,7 @@ const Bosts = () => {
                     <span>Comment</span>
                   </div>
                   <div className="infotest">
-                    <svg className="inter-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" /></svg>
+                    <svg className="inter-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" /></svg>
                     <span>Share</span>
                   </div>
 
@@ -1032,7 +987,7 @@ const Bosts = () => {
                             ? "active_book"
                             : ""
                           }`}
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z" /></svg>
+                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z" /></svg>
                       <span>Save</span>
                     </div>
                   }
@@ -1192,7 +1147,7 @@ const Bosts = () => {
                     [questionId]: iconType,
                   }));
                 };
-                const handleAnswer = (questionId, answer) => {
+                const handleAnswer = async (questionId, answer) => {
                   // تخزين الإجابة مؤقتاً
                   setLocalAnswers((prev) => ({
                     ...prev,
@@ -1200,7 +1155,14 @@ const Bosts = () => {
                   }));
 
                   // إرسال الإجابة للسيرفر
-                  chick_post_3(post._id, questionId, answer ? true : false);
+                  try {
+                    await chick_post_3(post._id, questionId, answer ? true : false);
+                    queryClient.invalidateQueries(["AllPost"]);
+                    setrelod(false);
+
+                  } catch (err) {
+                    console.error("فشل إرسال الإجابة:", err);
+                  }
                 };
 
                 return (
@@ -1342,7 +1304,7 @@ const Bosts = () => {
                     <span>Comment</span>
                   </div>
                   <div className="infotest">
-                    <svg className="inter-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" /></svg>
+                    <svg className="inter-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" /></svg>
                     <span>Share</span>
                   </div>
 
@@ -1365,7 +1327,7 @@ const Bosts = () => {
                             ? "active_book"
                             : ""
                           }`}
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z" /></svg>
+                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z" /></svg>
                       <span>Save</span>
                     </div>
                   }
@@ -1514,12 +1476,21 @@ const Bosts = () => {
                   }
                 };
 
-                const handleAnswer = (questionId, answer) => {
+                const handleAnswer = async (questionId, answer) => {
                   setLocalAnswers((prev) => ({
                     ...prev,
                     [questionId]: answer,
                   }));
-                  chick_post_4(post._id, questionId, answer);
+
+                  try {
+                    await chick_post_4(post._id, questionId, answer);
+                    queryClient.invalidateQueries(["AllPost"]);
+                    setrelod(false);
+
+                  } catch (err) {
+                    console.error("فشل إرسال الإجابة:", err);
+                  }
+
                 };
 
                 return (
@@ -1666,7 +1637,7 @@ const Bosts = () => {
                     <span>Comment</span>
                   </div>
                   <div className="infotest">
-                    <svg className="inter-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" /></svg>
+                    <svg className="inter-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" /></svg>
                     <span>Share</span>
                   </div>
 
@@ -1689,7 +1660,7 @@ const Bosts = () => {
                             ? "active_book"
                             : ""
                           }`}
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z" /></svg>
+                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z" /></svg>
                       <span>Save</span>
                     </div>
                   }
@@ -1817,7 +1788,7 @@ const Bosts = () => {
                   </p>
                   {!expandedPosts[post._id] && post.writing.length > 100 && (
                     <span className="toggle-btn" onClick={() => toggleText(post._id)}>
-                      View more
+                      See more
                     </span>
                   )}
                 </div>
@@ -2084,7 +2055,7 @@ const Bosts = () => {
                     <span>Comment</span>
                   </div>
                   <div className="infotest">
-                    <svg className="inter-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" /></svg>
+                    <svg className="inter-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" /></svg>
                     <span>Share</span>
                   </div>
 
@@ -2107,7 +2078,7 @@ const Bosts = () => {
                             ? "active_book"
                             : ""
                           }`}
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z" /></svg>
+                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z" /></svg>
                       <span>Save</span>
                     </div>
                   }
@@ -2317,7 +2288,7 @@ const Bosts = () => {
                     <span>Comment</span>
                   </div>
                   <div className="infotest">
-                    <svg className="inter-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" /></svg>
+                    <svg className="inter-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" /></svg>
                     <span>Share</span>
                   </div>
 
@@ -2340,7 +2311,7 @@ const Bosts = () => {
                             ? "active_book"
                             : ""
                           }`}
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z" /></svg>
+                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z" /></svg>
                       <span>Save</span>
                     </div>
                   }

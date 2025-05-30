@@ -11,6 +11,11 @@
     z-index: 99;
     border: 1px solid var(--hover-color);
 }
+@media(max-width:768px){
+    .create_menu {
+        border-radius: 0;
+    }
+}
 
 .create_menu .img_create {
     display: flex;

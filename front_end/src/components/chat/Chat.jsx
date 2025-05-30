@@ -12,8 +12,10 @@ import Loading_input from "../Loading_input/Loading_input";
 import Loading_button from "../Loading_button/Loading_button";
 import Info_menu from "../Info_menu/Info_menu";
 import { useMyData } from "../UseMydata";
-
+import { useAllUsers } from "../UseAllUser";
+import { useQueryClient } from "@tanstack/react-query";
 const Chat = () => {
+  const queryClient = useQueryClient();
   const { setUserById } = useUser();
   const { userTheme, setUserTheme } = useUser();
   const [cookies] = useCookies(["token"]);
@@ -24,12 +26,36 @@ const Chat = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const { data: MyData} = useMyData();
+  const { data: allUsers} = useAllUsers();
+
+
+
+
+  // useEffect(() => {
+  //   const delayDebounce = setTimeout(() => {
+  //     axios
+  //       .get(`${API}/user?name=${searchTerm}`, headers)
+  //       .then((res) => {
+  //         setAllUsers(res.data.data);
+  //         setLoad(false);
+  //         setReqLoading(false);
+  //         setReqLoadingId(null);
+  //       })
+  //       .catch(console.error);
+  //   }, 400);
+  //   return () => clearTimeout(delayDebounce);
+  // }, [searchTerm]);
+
+
+
+
+
   const [friends, setFriends] = useState([]);
   const [friendRequests, setFriendRequests] = useState([]);
   
 
   const [folloRequests, setfollRequests] = useState([]);
-  const [allUsers, setAllUsers] = useState([]);
+  
 
   const [reloadToggle, setReloadToggle] = useState(false);
   const [loadingRequests, setLoadingRequests] = useState(true);
@@ -143,20 +169,7 @@ const Chat = () => {
   //   return () => clearTimeout(delayDebounce);
   // }, [searchTerm, cookies.token]);
 
-  useEffect(() => {
-    const delayDebounce = setTimeout(() => {
-      axios
-        .get(`${API}/user?name=${searchTerm}`, headers)
-        .then((res) => {
-          setAllUsers(res.data.data);
-          setLoad(false);
-          setReqLoading(false);
-          setReqLoadingId(null);
-        })
-        .catch(console.error);
-    }, 400);
-    return () => clearTimeout(delayDebounce);
-  }, [searchTerm]);
+
 
   useEffect(() => {
     const savedRequests =
@@ -170,7 +183,8 @@ const [sentRequestss, setSentRequestss] = useState({});
     axios.post(`${API}/auth/Send_friend_request/${id}`, {}, headers)
       .then(() => {
         setReloadToggle((prev) => !prev);
-
+queryClient.invalidateQueries(['myData']);
+queryClient.invalidateQueries(['AllUser']);
       })
       .catch(()=>{
             setSentRequestss((prev) => ({ ...prev, [id]: false }));
@@ -199,32 +213,7 @@ const [sentRequestss, setSentRequestss] = useState({});
   //     })
   //     .catch(console.error);
   // };
-  const [Accept, setAccept] = useState({});
-  const acceptRequest = async (id) => {
-setAccept((prev) => ({ ...prev, [id]: "accepted" }));
-    try {
-      await axios.post(`${API}/auth/Accept_friend_request/${id}`, {}, headers);
 
-    } catch (err) {
-      console.error(err);
-    } finally {
-      // setReqLoading(false);
-      // setReqLoadingId(null);
-    }
-  };
-
-  const rejectRequest = async (id) => {
-setAccept((prev) => ({ ...prev, [id]: "rejected" }));
-    try {
-      await axios.post(`${API}/auth/Reject_friend_request/${id}`, {}, headers);
-
-    } catch (err) {
-      console.error(err);
-    } finally {
-      // setReqLoading(false);
-      // setReqLoadingId(null);
-    }
-  };
 
   // ============================================================
 
@@ -325,15 +314,18 @@ setAccept((prev) => ({ ...prev, [id]: "rejected" }));
 
       {activeTab === "General" && (
         <div className="general">
-          {MyData?.friends && allUsers?.length ? (
+          {MyData && MyData?.friends && allUsers?.length ? (
             allUsers
-              .filter((user) => user._id !== MyData.friends?._id && user.role === "user") // تصفية المستخدم الذي يتوافق مع myData
+              .filter((user) => user._id !== MyData.friends?._id && user.role === "user" && user._id !== MyData?._id && !MyData?.Friend_requests.some(f => f.friend._id === user._id)) // تصفية المستخدم الذي يتوافق مع myData
               .map((user, i) => (
                 friendRequests.some((f) => f.friend._id === user._id) ? null : 
                   <div key={i} className="req">
                   <div
                     className="img_req"
-                    onClick={() => Navigate(`/Get_Shoole_By/${user._id}`)}
+                onClick={async () => {
+  Navigate(`/Get_Shoole_By/${user._id}`);
+}}
+
                   >
                     {/* {console.log(user)} */}
                     <img
@@ -354,7 +346,7 @@ setAccept((prev) => ({ ...prev, [id]: "rejected" }));
                     ) : null} */}
                     { user.Friend_requests.some((f) => f.friend === MyData?._id) || sentRequestss[user._id] ? (
                       <p>Sent successfully</p>
-                    ) : friends.some((f) => f.friend?._id === user?._id) ? (
+                    ) : MyData?.friends.some((f) => f.friend?._id === user?._id) ? (
                       <p>Friends</p>
                     ) : 
                     

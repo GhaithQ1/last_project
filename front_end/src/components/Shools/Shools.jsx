@@ -4,9 +4,13 @@ import { useCookies } from "react-cookie";
 import './Shools.css'
 import { useAllUsers } from "../UseAllUser";
 import { useMyData } from "../UseMydata";
+
+import { useNavigate } from "react-router-dom";
 const Shools = () => {
   const [cookies] = useCookies(["token"]);
   const API = "http://localhost:8000/api/v2";
+
+    const Navigate = useNavigate();
   
   const headers = {
     headers: { Authorization: `Bearer ${cookies.token}` },
@@ -38,13 +42,13 @@ const Shools = () => {
       <p className="Suggestions">Suggestions to follow</p>
       <div className="ov">
         {MyData && allUsers
-          .filter(
+          ?.filter(
             (school) =>
               school?.role === "employee" 
           )
           .map((school) => (
             <div className="main_info" key={school?._id}>
-              <div className="info_schools">
+              <div className="info_schools" onClick={() => Navigate(`/Get_Shoole_By/${school._id}`)}>
                 <img
                   src={
                     school?.profilImage

@@ -8,7 +8,9 @@ import axios from 'axios';
 import Loading_button from "../Loading_button/Loading_button";
 import Info_menu from "../Info_menu/Info_menu";
 import Shools from "../Shools/Shools";
+import { useQueryClient } from "@tanstack/react-query";
 const Create_Bost_Ifrem = () => {
+  const queryClient = useQueryClient();
   const Navigate = useNavigate();
   const [cookies] = useCookies(["token"]);
   const [errors, setErrors] = useState({});
@@ -30,6 +32,7 @@ const Create_Bost_Ifrem = () => {
       console.log(res)
       Navigate("/")
       setLoad_butt(false);
+      queryClient.invalidateQueries(["AllPost"]);
     }).catch((err)=>{
       if (err.response?.data?.errors) {
         const formattedErrors = {};

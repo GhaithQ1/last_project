@@ -8,7 +8,9 @@ import axios from "axios";
 import Loading_button from "../Loading_button/Loading_button";
 import Info_menu from "../Info_menu/Info_menu";
 import Shools from "../Shools/Shools";
+import { useQueryClient } from "@tanstack/react-query";
 const Create_Bost_choose_the_correct_answer = () => {
+    const queryClient = useQueryClient();
   const Navigate = useNavigate();
   const [cookies] = useCookies(["token"]);
   const [errors, setErrors] = useState({});
@@ -103,6 +105,7 @@ const Create_Bost_choose_the_correct_answer = () => {
           },
         }
       );
+      queryClient.invalidateQueries(["AllPost"]);
 
       // بعد الإرسال، نقوم بتوجيه المستخدم إلى الصفحة الرئيسية
       Navigate("/");

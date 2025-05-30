@@ -153,7 +153,7 @@ header .container .header_respon .profile .profile_svg span {
     top: -2px;
     right: -2px;
     font-size: 10px;
-    padding: 0px 4px;
+    padding: 0px 5px;
     background-color: red;
     border-radius: var(--border-radius);
     color: white;

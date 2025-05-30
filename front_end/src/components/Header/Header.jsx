@@ -10,8 +10,10 @@ import { useUser } from '../Context';
 import { useLocation } from 'react-router-dom';
 import Info_menu from '../Info_menu/Info_menu';
 import { useMyData } from '../UseMydata';
+import Loading_Filter_post from "../Loading_Filter_post/Loading_Filter_post";
+
 const Header = () => {
-  const { data: MyData} = useMyData();
+  const { data: MyData ,isFetching} = useMyData();
 
   const [cookies, setCookies] = useCookies(["token"]);
   const API = "http://localhost:8000/api/v2";
@@ -43,24 +45,6 @@ const Header = () => {
       console.log(err)
     })
   }
-  // const [MyData, setMyData] = useState([]);
-  // const [requst, setrequst] = useState([]);
-  // useEffect(() => {
-  //   axios.get(`http://localhost:8000/api/v2/auth/get_date_my`, {
-  //     headers: {
-  //       Authorization: `Bearer ${cookies.token}`,
-  //     },
-  //   })
-  //     .then(res => {
-  //       setMyData(res.data.data);
-  //       setrequst(res.data.data.Friend_requests);
-  //       console.log(res.data.data);
-
-  //     })
-  //     .catch(error => {
-  //       console.error('Error fetching data', error);
-  //     });
-  // }, []);
 
 
 
@@ -269,7 +253,7 @@ const Header = () => {
 
 
                 </div>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M3 21v-2a4 4 0 0 1 4 -4h4c.96 0 1.84 .338 2.53 .901" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /><path d="M16 19h6" /><path d="M19 16v6" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M3 21v-2a4 4 0 0 1 4 -4h4c.96 0 1.84 .338 2.53 .901" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /><path d="M16 19h6" /><path d="M19 16v6" /></svg>
               </div>
             </div>
             <div className="show_item_header">
@@ -281,7 +265,7 @@ const Header = () => {
             <div className="show_item_header">
               <div className="profile_svg">
                 <span>31</span>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M8 9h8" /><path d="M8 13h6" /><path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M8 9h8" /><path d="M8 13h6" /><path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" /></svg>
               </div>
             </div>
 
@@ -289,7 +273,7 @@ const Header = () => {
        
               <div className="show_item_header desnone" onClick={toggleMenu}>
                 <div className="profile_svg">
-<svg  xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 6h10" /><path d="M4 12h16" /><path d="M7 12h13" /><path d="M4 18h10" /></svg>
+<svg  xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 6h10" /><path d="M4 12h16" /><path d="M7 12h13" /><path d="M4 18h10" /></svg>
 </div>
 
               </div>

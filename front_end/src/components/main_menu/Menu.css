@@ -1,6 +1,6 @@
 .menu {
 background-color: var(--box-color);
-    overflow: hidden;
+    /* overflow: hidden; */
     position: sticky;
     top: 55px;
     z-index: 100;

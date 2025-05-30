@@ -45,6 +45,7 @@
   box-shadow: 0 2px 8px var(--shadow-color);
   margin: auto;
   margin-top: 200px;
+  border: 1px solid var(--hover-color);
 }
 
 .main_profile_post .profile .profile_all img {
@@ -63,6 +64,7 @@
   display: flex;
   flex-direction: column;
   align-items: start;
+  padding-top:10px ;
 }
 
 .main_profile_post .profile .profile_all .info_me h3 {
@@ -77,31 +79,21 @@
 .main_profile_post .profile .profile_all .info_me p {
   color: var(--text-color);
   text-align: center;
-  font-size: 14px;
+  font-size: var(--text-size);
 }
 
 .main_profile_post .profile .profile_all .info_me p>span {
   font-weight: 600;
 }
 
-.main_profile_post .profile .profile_all button {
-  padding: 10px 20px;
-  font-size: 18px;
-  border: none;
-    border-radius: var(--border-radius);
-  background-color: var(--main-color);
-  color: white;
-  cursor: pointer;
-  display: block;
-  margin-left: auto;
-}
 
-.bosts>h3 {
+.bosts > h3 {
   background-color: var(--box-color);
     border-radius: var(--border-radius);
   padding: 20px;
   text-align: center;
   color: var(--title-color);
+  font-size: var(--title-mini-size);
 }
 
 .main_profile_post .bosts .all_bost {
@@ -126,6 +118,7 @@
   right: 20px;
   font-size: 22px;
   color: var(--title-color);
+  z-index: 10;
 }
 .remove_div-but .remove_but{
 position: absolute;
@@ -325,10 +318,13 @@ background-color:rgb(231 151 151) !important;
   box-shadow: 0 2px 8px var(--shadow-color);
   margin: auto;
   color: var(--text-color);
+  border: 1px solid var(--hover-color);
+  font-size: var(--text-size);
 }
 
 .description_profile h3 {
   color: var(--title-color);
+  font-size: var(--title-mini-size);
 }
 
 

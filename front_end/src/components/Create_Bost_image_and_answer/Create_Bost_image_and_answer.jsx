@@ -8,7 +8,9 @@ import { useCookies } from 'react-cookie';
 import Loading_button from "../Loading_button/Loading_button";
 import Info_menu from "../Info_menu/Info_menu";
 import Shools from "../Shools/Shools";
+import { useQueryClient } from "@tanstack/react-query";
 const Create_Bost_image_and_answer = () => {
+  const queryClient = useQueryClient();
   const [questions, setQuestions] = useState([
     { img: null, word_1: "", word_2: "", word_3: "", word_4: "", correctWord: "" ,question: ""}
   ]);
@@ -112,6 +114,7 @@ const Create_Bost_image_and_answer = () => {
   
       navigate('/');
       setLoad_butt(false);
+      queryClient.invalidateQueries(["AllPost"]);
     } catch (err) {
       console.error(err)
       if (err.response?.data?.errors) {

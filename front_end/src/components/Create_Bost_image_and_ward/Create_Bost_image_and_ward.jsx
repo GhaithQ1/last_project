@@ -8,7 +8,9 @@ import Chat from "../chat/Chat";
 import Loading_button from "../Loading_button/Loading_button";
 import Info_menu from "../Info_menu/Info_menu";
 import Shools from "../Shools/Shools";
+import { useQueryClient } from "@tanstack/react-query";
 const Create_Bost_image_and_ward = () => {
+  const queryClient = useQueryClient();
   const [cookies] = useCookies(["token"]);
   const navigate = useNavigate();
   const [Load_butt, setLoad_butt] = useState(false);
@@ -60,6 +62,7 @@ const Create_Bost_image_and_ward = () => {
         },
       })
       .then((res) => {
+        queryClient.invalidateQueries(["AllPost"]);
         navigate("/");
         setLoad_butt(false);
       })

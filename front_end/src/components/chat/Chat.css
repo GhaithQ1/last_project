@@ -201,6 +201,7 @@
   overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  
 }
 
 @media(max-width:768px) {
@@ -216,7 +217,9 @@
   cursor: pointer;
   padding: 10px 20px;
   transition: 0.3s all;
+  
 }
+
 
 
 .chat .friend:hover {
@@ -306,7 +309,7 @@
 }
 
 .chat-container .message p {
-  padding: 10px 15px;
+  padding:5px 10px;
   border-radius: var(--border-radius);
   margin: 0;
   max-width: 100%;
@@ -323,6 +326,7 @@
 .chat-container .me p {
   background-color: var(--main-color);
   color: #fff;
+  font-size: var(--text-size);
 }
 
 .chat-container .other {
@@ -332,6 +336,7 @@
 .chat-container .other p {
   background-color: var(--box-color);
   color: var(--text-color);
+  font-size: var(--text-size);
 }
 
 .chat-container .chat-input {
@@ -622,9 +627,14 @@
 
 
 .not_chat {
-  color: var(--title-color);
-  padding: 0 15px;
+  color: var(--text-color);
+  padding: 5px 15px;
   text-align: center;
+  font-size: var(--text-mini-size);
+  background-color: var(--box-color);
+  width: 90%;
+  margin: 0 auto;
+  border-radius: var(--border-radius);
 }
 
 

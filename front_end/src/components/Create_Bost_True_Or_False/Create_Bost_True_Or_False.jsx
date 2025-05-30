@@ -8,7 +8,9 @@ import axios from 'axios';
 import Loading_button from "../Loading_button/Loading_button";
 import Info_menu from "../Info_menu/Info_menu";
 import Shools from "../Shools/Shools";
+import { useQueryClient } from "@tanstack/react-query";
 const Create_Bost_True_Or_False = () => {
+  const queryClient = useQueryClient();
   const [formErrors, setFormErrors] = useState({});
   const [questions, setQuestions] = useState([{ question: '', condition: '' }]); // البداية مع سؤال واحد
   const Navigate = useNavigate();
@@ -55,6 +57,7 @@ const Create_Bost_True_Or_False = () => {
         Authorization: `Bearer ${cookies.token}`,
       },
     }).then((res) => {
+      queryClient.invalidateQueries(["AllPost"]);
       Navigate('/');
       setLoad_butt(false);
     }).catch((err) => {
