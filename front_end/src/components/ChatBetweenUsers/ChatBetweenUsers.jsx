@@ -20,6 +20,9 @@ import EmojiPicker from "emoji-picker-react";
 import Loading_Chat from "../Loading_Chat/Loading_Chat";
 
 const ChatBetweenUsers = () => {
+
+  const apiUrl = import.meta.env.VITE_API_URL;
+
   const { userById } = useUser();
   const [reload, setReload] = useState(false);
   const [loadingRequest, setLoadingRequest] = useState(true);
@@ -82,9 +85,13 @@ const ChatBetweenUsers = () => {
     setLoadingChat(true);
   }, []);
 
+
+
+
+
   useEffect(() => {
     axios
-      .get("http://localhost:8000/api/v2/auth/get_date_my", {
+      .get(`${apiUrl}/api/v2/auth/get_date_my`, {
         headers: {
           Authorization: `Bearer ${cookies.token}`,
         },
@@ -133,7 +140,7 @@ const ChatBetweenUsers = () => {
         const lastMessageTime = localStorage.getItem(lastMessageTimeKey) || 0;
 
         const res = await axios.get(
-          `http://localhost:8000/api/v2/chat/${user1Id}/${userById._id}`,
+          `${apiUrl}/api/v2/chat/${user1Id}/${userById._id}`,
           {
             headers: {
               Authorization: `Bearer ${cookies.token}`,
@@ -219,7 +226,7 @@ const ChatBetweenUsers = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:8000/api/v2/chat",
+        `${apiUrl}/api/v2/chat`,
         formData,
         {
           headers: {
@@ -330,7 +337,7 @@ const ChatBetweenUsers = () => {
                     userById.profilImage
                       ? userById.profilImage.startsWith("http")
                         ? userById.profilImage
-                        : `http://localhost:8000/user/${userById.profilImage}`
+                        : `${apiUrl}/user/${userById.profilImage}`
                       : "/image/pngegg.png"
                   }
                   alt={`Image of ${userById.name}`}

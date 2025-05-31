@@ -8,6 +8,8 @@ export const useUser = () => useContext(UserContext);
 
 export const UserProvider = ({ children }) => {
 
+  const apiUrl = import.meta.env.VITE_API_URL;
+
   const [userId, setUserId] = useState(null); // لتخزين معرف المستخدم
   const [userById, setUserById] = useState(null); // بيانات المستخدم عبر المعرف
   const [showChat, setShowChat] = useState(false); // إظهار أو إخفاء الدردشة
@@ -22,7 +24,7 @@ export const UserProvider = ({ children }) => {
     const [friendRequests, setFriendRequests] = useState([]);
 const [messages, setMessages] = useState([]);
   useEffect(() => {
-    axios.get(`http://localhost:8000/api/v2/auth/get_date_my`, {
+    axios.get(`${apiUrl}/api/v2/auth/get_date_my`, {
       headers: {
         Authorization: `Bearer ${cookies.token}`,
       },

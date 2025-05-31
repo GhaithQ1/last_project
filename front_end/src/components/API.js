@@ -3,9 +3,10 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 export const fetchMyData = async () => {
+  const apiUrl = import.meta.env.VITE_API_URL;
   const token = Cookies.get('token');
   const response = await axios.get(
-    `http://localhost:8000/api/v2/auth/get_date_my`,
+    `${apiUrl}/api/v2/auth/get_date_my`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -16,9 +17,10 @@ export const fetchMyData = async () => {
   return response.data.data;
 };
 export const fetchAllUsers = async () => {
+  const apiUrl = import.meta.env.VITE_API_URL;
   const token = Cookies.get('token');
   const response = await axios.get(
-    `http://localhost:8000/api/v2/user`,
+    `${apiUrl}/api/v2/user`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -31,9 +33,10 @@ export const fetchAllUsers = async () => {
 
 
 export const fetchAllPost = async ({ type_post, type_post_role }={}) => {
+  const apiUrl = import.meta.env.VITE_API_URL;
   const token = Cookies.get('token');
   const response = await axios.get(
-    `http://localhost:8000/api/v2/post?type=${type_post}&role=${type_post_role}`,
+    `${apiUrl}/api/v2/post?type=${type_post}&role=${type_post_role}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

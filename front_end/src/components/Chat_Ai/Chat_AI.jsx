@@ -18,7 +18,8 @@ import EmojiPicker from 'emoji-picker-react';
 import { useNavigate } from "react-router-dom";
 const Chat_AI = () => {
     const Navigate = useNavigate();
-    const API = 'http://localhost:8000/api/v2';
+      const apiUrl = import.meta.env.VITE_API_URL;
+    const API = `${apiUrl}/api/v2`;
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState("");
     const [loading, setLoading] = useState(false);

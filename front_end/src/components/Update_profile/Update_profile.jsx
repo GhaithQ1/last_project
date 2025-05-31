@@ -1,4 +1,4 @@
-import { useEffect, useState , useRef} from "react";
+import { useEffect, useState , useRef } from "react";
 import axios from "axios";
 import Menu from "../main_menu/Menu";
 import Chat from "../chat/Chat";
@@ -8,8 +8,16 @@ import { useCookies } from "react-cookie";
 import { useNavigate } from 'react-router-dom';
 
 import Loading_input from "../Loading_input/Loading_input";
+import Info_menu from "../Info_menu/Info_menu";
+import Shools from "../Shools/Shools";
+import { useMyData } from "../UseMydata";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function UpdateProfile() {
+  const queryClient = useQueryClient();
+
+const { data: getmydata } = useMyData();
+
   const Navigate = useNavigate();
 
   const [cookies] = useCookies(["token"]);
@@ -38,20 +46,22 @@ export default function UpdateProfile() {
   // مرجع لاستخدام إدخال الملف عند النقر على الصورة
   const profileInputRef = useRef(null);
   const coverInputRef = useRef(null);
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   // استرجاع بيانات المستخدم عند تحميل الصفحة
   useEffect(() => {
     setLoadInput(true)
     const fetchUserData = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/v2/auth/get_date_my", {
+        const res = await axios.get(`${apiUrl}/api/v2/auth/get_date_my`, {
           headers: { Authorization: `Bearer ${cookies.token}` },
         });
         setUserData(res.data.data);
-        setPreviewProfileImage(`http://localhost:8000/user/${res.data.data.profilImage}`);
-        setPreviewCoverImage(`http://localhost:8000/user/${res.data.data.Cover_image}`);
+        setPreviewProfileImage(`${apiUrl}/user/${res.data.data.profilImage}`);
+        setPreviewCoverImage(`${apiUrl}/user/${res.data.data.Cover_image}`);
         setUserData_role(res.data.data.role)
         setLoadInput(false)
+
       } catch (error) {
         console.error("Error fetching data", error);
       }
@@ -80,12 +90,13 @@ export default function UpdateProfile() {
   
       console.log("Data being sent:", formData);
   
-      await axios.put("http://localhost:8000/api/v2/user", formData, {
+      await axios.put(`${apiUrl}/api/v2/user`, formData, {
         headers: { 
           Authorization: `Bearer ${cookies.token}`,
           "Content-Type": "multipart/form-data",
         }
       });
+      queryClient.invalidateQueries(['myData'])
       Navigate("/profile")
     } catch (error) {
       console.error("Error updating data", error);
@@ -112,7 +123,10 @@ export default function UpdateProfile() {
   return (
     <div className="home">
       <div className="container">
-        <Menu />
+        <div className="flexinfo">
+           <Info_menu />
+            <Shools/>
+          </div>
         <div className="update_profile">
           <h1>Update Profile</h1>
 

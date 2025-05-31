@@ -9,9 +9,6 @@ overflow: hidden;
 border: 1px solid var(--hover-color);
 }
 @media(max-width:1191px){
-.schoolss{
-    display: none;
-}
 }
 .ov{
     max-height: 100%;

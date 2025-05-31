@@ -11,12 +11,15 @@ import { useLocation } from 'react-router-dom';
 import Info_menu from '../Info_menu/Info_menu';
 import { useMyData } from '../UseMydata';
 import Loading_Filter_post from "../Loading_Filter_post/Loading_Filter_post";
-
+import { useQueryClient } from "@tanstack/react-query";
+import Shools from '../Shools/Shools';
 const Header = () => {
-  const { data: MyData ,isFetching} = useMyData();
+  const queryClient = useQueryClient();
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const { data: MyData, isFetching } = useMyData();
 
   const [cookies, setCookies] = useCookies(["token"]);
-  const API = "http://localhost:8000/api/v2";
+  const API = `${apiUrl}/api/v2`;
 
   const headers = {
     headers: { Authorization: `Bearer ${cookies.token}` },
@@ -33,7 +36,7 @@ const Header = () => {
   const Navigate = useNavigate();
 
   const logout = () => {
-    axios.put('http://localhost:8000/api/v2/auth/logout', {}, {
+    axios.put(`${apiUrl}/api/v2/auth/logout`, {}, {
       headers: {
         Authorization: `Bearer ${cookies.token}`,
       }
@@ -94,7 +97,7 @@ const Header = () => {
 
 
   const { setUserTheme } = useUser();
- 
+
 
   const [isToggled, setIsToggled] = useState(() => {
     const storedTheme = localStorage.getItem('theme');
@@ -143,6 +146,7 @@ const Header = () => {
     setAccept((prev) => ({ ...prev, [id]: "accepted" }));
     try {
       await axios.post(`${API}/auth/Accept_friend_request/${id}`, {}, headers);
+      queryClient.invalidateQueries(['myData'])
     } catch (err) {
       console.error(err);
     }
@@ -152,6 +156,7 @@ const Header = () => {
     setAccept((prev) => ({ ...prev, [id]: "rejected" }));
     try {
       await axios.post(`${API}/auth/Reject_friend_request/${id}`, {}, headers);
+      queryClient.invalidateQueries(['myData'])
     } catch (err) {
       console.error(err);
     }
@@ -180,6 +185,20 @@ const Header = () => {
           </form>
 
           <div className='profile'>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             <div className="show_item_header">
               <div className="profile_svg">
 
@@ -198,7 +217,7 @@ const Header = () => {
                                 friend.profilImage
                                   ? friend.profilImage.startsWith("http")
                                     ? friend.profilImage
-                                    : `http://localhost:8000/user/${friend.profilImage}`
+                                    : `${apiUrl}/user/${friend.profilImage}`
                                   : "/image/pngegg.png"
                               }
                               alt={`Image of ${friend.name}`}
@@ -253,9 +272,10 @@ const Header = () => {
 
 
                 </div>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M3 21v-2a4 4 0 0 1 4 -4h4c.96 0 1.84 .338 2.53 .901" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /><path d="M16 19h6" /><path d="M19 16v6" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokelinejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4" /><path d="M15 19l2 2l4 -4" /></svg>
               </div>
             </div>
+
             <div className="show_item_header">
               <div className="profile_svg">
                 <span>18</span>
@@ -269,12 +289,13 @@ const Header = () => {
               </div>
             </div>
 
+
             <div ref={commentRef}>
-       
+
               <div className="show_item_header desnone" onClick={toggleMenu}>
                 <div className="profile_svg">
-<svg  xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 6h10" /><path d="M4 12h16" /><path d="M7 12h13" /><path d="M4 18h10" /></svg>
-</div>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 6h10" /><path d="M4 12h16" /><path d="M7 12h13" /><path d="M4 18h10" /></svg>
+                </div>
 
               </div>
               {menuVisible && (

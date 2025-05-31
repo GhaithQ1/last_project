@@ -15,6 +15,7 @@ const Info_menu = () => {
     const { data: MyData ,isLoading,isFetching} = useMyData();
     const [cookies, setCookies] = useCookies(["token"]);
     const Navigate = useNavigate();
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     const [isToggled, setIsToggled] = useState(() => {
         const storedTheme = localStorage.getItem('theme');
@@ -42,7 +43,7 @@ const Info_menu = () => {
     };
 
     const logout = () => {
-        axios.put('http://localhost:8000/api/v2/auth/logout', {}, {
+        axios.put(`${apiUrl}/api/v2/auth/logout`, {}, {
             headers: {
                 Authorization: `Bearer ${cookies.token}`,
             }
@@ -73,7 +74,7 @@ const Info_menu = () => {
                                 MyData?.profilImage
                                     ? MyData?.profilImage.startsWith("http")
                                         ? MyData?.profilImage
-                                        : `http://localhost:8000/user/${MyData?.profilImage}`
+                                        : `${apiUrl}/user/${MyData?.profilImage}`
                                     : "/image/pngegg.png"
                             }
                             alt={`Image of ${MyData?.name}`}

@@ -15,6 +15,7 @@ const Create_Bost_choose_the_correct_answer = () => {
   const [cookies] = useCookies(["token"]);
   const [errors, setErrors] = useState({});
   const [Load_butt, setLoad_butt] = useState(false);
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   const [questions, setQuestions] = useState([
     { question: "", Answer_1: "", Answer_2: "", Answer_3: "", Answer_4: "" },
@@ -95,7 +96,7 @@ const Create_Bost_choose_the_correct_answer = () => {
 
       // إرسال البيانات إلى الخادم
       await axios.post(
-        `http://localhost:8000/api/v2/post/post_2`,
+        `${apiUrl}/api/v2/post/post_2`,
         {
           questions: preparedQuestions,
         },

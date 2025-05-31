@@ -133,6 +133,9 @@ const Get_Shoole_By_Id = () => {
 
 
 
+    const apiUrl = import.meta.env.VITE_API_URL;
+
+
 
 
   const { data: getallpost, isLoading, isFetching } = useAllPost();
@@ -140,7 +143,7 @@ const Get_Shoole_By_Id = () => {
   const posts = getallpost?.filter((post) => post.user._id === idParams);
   const AllComment = getallpost?.filter((item) => id_comment === item._id)[0]?.comments || [];
 
-  const API = "http://localhost:8000/api/v2";
+  const API = `${apiUrl}/api/v2`;
 
     
   
@@ -152,7 +155,7 @@ const [loading ,SetLoading] = useState(false)
     if (!idParams) return;
     SetLoading(true) // لا تعمل شي إذا ما وصل الاي دي
     axios
-    .get(`http://localhost:8000/api/v2/user/${idParams}`, {
+    .get(`${apiUrl}/api/v2/user/${idParams}`, {
       headers: {
         Authorization: `Bearer ${cookies.token}`,
       },
@@ -197,7 +200,7 @@ const [loading ,SetLoading] = useState(false)
     try {
 
       const res = await axios.post(
-        `http://localhost:8000/api/v2/post/create_post_comments/${id_comment}`,
+        `${apiUrl}/api/v2/post/create_post_comments/${id_comment}`,
         {
           comment: data.get('comment'),
         },
@@ -205,6 +208,7 @@ const [loading ,SetLoading] = useState(false)
           headers: { Authorization: `Bearer ${cookies.token}` },
         }
       );
+      queryClient.invalidateQueries(['AllPost'])
       SetNewComment(res.data.data.comments);
 
     } catch (error) {
@@ -228,7 +232,7 @@ const [loading ,SetLoading] = useState(false)
     try {
 
       await axios.post(
-        `http://localhost:8000/api/v2/post/toggle_post_like/${post._id}`,
+        `${apiUrl}/api/v2/post/toggle_post_like/${post._id}`,
         {},
         {
           headers: { Authorization: `Bearer ${cookies.token}` },
@@ -243,7 +247,7 @@ const [loading ,SetLoading] = useState(false)
   const bookMarks = async (id) => {
     try {
       await axios.post(
-        `http://localhost:8000/api/v2/auth/toggleSavedPost/${id}`,
+        `${apiUrl}/api/v2/auth/toggleSavedPost/${id}`,
         {},
         {
           headers: { Authorization: `Bearer ${cookies.token}` },
@@ -276,7 +280,7 @@ const [loading ,SetLoading] = useState(false)
 
       // إرسال البيانات إلى API
       const res = await axios.post(
-        `http://localhost:8000/api/v2/post/post_3_chick`, // URL الخاص بالـ API
+        `${apiUrl}/api/v2/post/post_3_chick`, // URL الخاص بالـ API
         {
           postId: IdPost,
           answers,
@@ -304,7 +308,7 @@ const [loading ,SetLoading] = useState(false)
 
       // إرسال البيانات إلى API
       const res = await axios.post(
-        `http://localhost:8000/api/v2/post/post_2_chick`, // URL الخاص بالـ API
+        `${apiUrl}/api/v2/post/post_2_chick`, // URL الخاص بالـ API
         {
           postId: IdPost,
           answers,
@@ -354,7 +358,7 @@ const [loading ,SetLoading] = useState(false)
 
       // إرسال البيانات إلى API
       const res = await axios.post(
-        `http://localhost:8000/api/v2/post/post_4_chick`, // URL الخاص بالـ API
+        `${apiUrl}/api/v2/post/post_4_chick`, // URL الخاص بالـ API
         {
           postId: IdPost,
           answers,
@@ -518,8 +522,8 @@ const [loading ,SetLoading] = useState(false)
                   <img
                     src={
                       GetDataById.Cover_image
-                        ? `http://localhost:8000/user/${GetDataById.Cover_image}`
-                        : "./image/back1.jpg"
+                        ? `${apiUrl}/user/${GetDataById.Cover_image}`
+                        : "../image/back1.jpg"
                     }
                     alt=""
                   />
@@ -528,9 +532,9 @@ const [loading ,SetLoading] = useState(false)
                   <img
                     src={
                       GetDataById.profilImage
-                        ? GetDataById.profilImage.startsWith("http")
+                        ? GetDataById.profilImage?.startsWith("http")
                           ? GetDataById.profilImage
-                          : `http://localhost:8000/user/${GetDataById.profilImage}`
+                          : `${apiUrl}/user/${GetDataById.profilImage}`
                         : "/image/pngegg.png"
                     }
                     alt={`Image of ${GetDataById.name}`}
@@ -677,7 +681,7 @@ const [loading ,SetLoading] = useState(false)
                             <img
                               src={
                                 post.user
-                                  ? `http://localhost:8000/user/${post.user.profilImage}`
+                                  ? `${apiUrl}/user/${post.user.profilImage}`
                                   : "/image/pngegg.png"
                               }
                               alt=""
@@ -740,7 +744,7 @@ const [loading ,SetLoading] = useState(false)
                                   <img
                                     src={
                                       pos
-                                        ? `http://localhost:8000/posts/${pos.postImage}`
+                                        ? `${apiUrl}/posts/${pos.postImage}`
                                         : null
                                     }
                                     alt={`Image ${pos._id}`}
@@ -749,7 +753,7 @@ const [loading ,SetLoading] = useState(false)
                                     id={pos._id}
                                     src={
                                       pos
-                                        ? `http://localhost:8000/posts/${pos.postAudio}`
+                                        ? `${apiUrl}/posts/${pos.postAudio}`
                                         : null
                                     }
                                   ></audio>
@@ -883,11 +887,11 @@ const [loading ,SetLoading] = useState(false)
                                       <img
                                         src={
                                           com.user_comment?.profilImage
-                                            ? com.user_comment.profilImage.startsWith(
+                                            ? com.user_comment.profilImage?.startsWith(
                                               "http"
                                             )
                                               ? com.user_comment.profilImage
-                                              : `http://localhost:8000/user/${com.user_comment.profilImage}`
+                                              : `${apiUrl}/user/${com.user_comment.profilImage}`
                                             : "/image/pngegg.png"
                                         }
                                         alt={`Image of ${com.user_comment?.name || "user"
@@ -931,7 +935,7 @@ const [loading ,SetLoading] = useState(false)
                             <img
                               src={
                                 post.user
-                                  ? `http://localhost:8000/user/${post.user.profilImage}`
+                                  ? `${apiUrl}/user/${post.user.profilImage}`
                                   : "/image/pngegg.png"
                               }
                               alt={`Image of ${post.name}`}
@@ -1022,7 +1026,10 @@ const [loading ,SetLoading] = useState(false)
                                   // ما تعمل refetch أو invalidateQueries هون، أو:
                                   queryClient.invalidateQueries(['AllPost']);
 
-                                  setrelod(false);
+                                        setTimeout(() => {
+                        
+                        setrelod(false);
+                      }, 1500);
                                 } catch (error) {
                                   console.error("فشل تحديث الجواب:", error);
                                 }
@@ -1219,11 +1226,11 @@ const [loading ,SetLoading] = useState(false)
                                       <img
                                         src={
                                           com.user_comment?.profilImage
-                                            ? com.user_comment.profilImage.startsWith(
+                                            ? com.user_comment.profilImage?.startsWith(
                                               "http"
                                             )
                                               ? com.user_comment.profilImage
-                                              : `http://localhost:8000/user/${com.user_comment.profilImage}`
+                                              : `${apiUrl}/user/${com.user_comment.profilImage}`
                                             : "/image/pngegg.png"
                                         }
                                         alt={`Image of ${com.user_comment?.name || "user"
@@ -1267,7 +1274,7 @@ const [loading ,SetLoading] = useState(false)
                             <img
                               src={
                                 post.user
-                                  ? `http://localhost:8000/user/${post.user.profilImage}`
+                                  ? `${apiUrl}/user/${post.user.profilImage}`
                                   : "/image/pngegg.png"
                               }
                               alt=""
@@ -1364,7 +1371,10 @@ const [loading ,SetLoading] = useState(false)
                               try {
                                 await chick_post_3(post._id, questionId, answer ? true : false);
                                 queryClient.invalidateQueries(["AllPost"]);
-                                setrelod(false);
+                                      setTimeout(() => {
+                        
+                        setrelod(false);
+                      }, 1500);
 
                               } catch (err) {
                                 console.error("فشل إرسال الإجابة:", err);
@@ -1559,11 +1569,11 @@ const [loading ,SetLoading] = useState(false)
                                       <img
                                         src={
                                           com.user_comment?.profilImage
-                                            ? com.user_comment.profilImage.startsWith(
+                                            ? com.user_comment.profilImage?.startsWith(
                                               "http"
                                             )
                                               ? com.user_comment.profilImage
-                                              : `http://localhost:8000/user/${com.user_comment.profilImage}`
+                                              : `${apiUrl}/user/${com.user_comment.profilImage}`
                                             : "/image/pngegg.png"
                                         }
                                         alt={`Image of ${com.user_comment?.name || "user"
@@ -1607,7 +1617,7 @@ const [loading ,SetLoading] = useState(false)
                             <img
                               src={
                                 post.user
-                                  ? `http://localhost:8000/user/${post.user.profilImage}`
+                                  ? `${apiUrl}/user/${post.user.profilImage}`
                                   : "/image/pngegg.png"
                               }
                               alt=""
@@ -1691,7 +1701,10 @@ const [loading ,SetLoading] = useState(false)
                               try {
                                 await chick_post_4(post._id, questionId, answer);
                                 queryClient.invalidateQueries(["AllPost"]);
-                                setrelod(false);
+                                     setTimeout(() => {
+                        
+                        setrelod(false);
+                      }, 1500);
 
                               } catch (err) {
                                 console.error("فشل إرسال الإجابة:", err);
@@ -1720,7 +1733,7 @@ const [loading ,SetLoading] = useState(false)
 
                                       <div className="img_ans">
                                         <img
-                                          src={`http://localhost:8000/posts/${item.img}`}
+                                          src={`${apiUrl}/posts/${item.img}`}
                                           alt="Question"
                                         />
                                         {item.question ? <h2>{item.question}</h2> : null}
@@ -1892,11 +1905,11 @@ const [loading ,SetLoading] = useState(false)
                                       <img
                                         src={
                                           com.user_comment?.profilImage
-                                            ? com.user_comment.profilImage.startsWith(
+                                            ? com.user_comment.profilImage?.startsWith(
                                               "http"
                                             )
                                               ? com.user_comment.profilImage
-                                              : `http://localhost:8000/user/${com.user_comment.profilImage}`
+                                              : `${apiUrl}/user/${com.user_comment.profilImage}`
                                             : "/image/pngegg.png"
                                         }
                                         alt={`Image of ${com.user_comment?.name || "user"
@@ -1939,10 +1952,10 @@ const [loading ,SetLoading] = useState(false)
                           <div className="name_shoole">
                             <img
                               src={
-                                post.user
-                                  ? post.user.profilImage.startsWith("http")
+                                post.user?.profilImage
+                                  ? post.user.profilImage?.startsWith("http")
                                     ? post.user.profilImage
-                                    : `http://localhost:8000/user/${post.user.profilImage}`
+                                    : `${apiUrl}/user/${post.user.profilImage}`
                                   : "/image/pngegg.png"
                               }
                               alt={`Image of ${post.user.name}`}
@@ -2012,7 +2025,7 @@ const [loading ,SetLoading] = useState(false)
                                       post.video_post.forEach((video, index) => {
                                         allMedia.push({
                                           type: "video",
-                                          src: `http://localhost:8000/posts/${video}`,
+                                          src: `${apiUrl}/posts/${video}`,
                                           key: `video-${index}`,
                                         });
                                       });
@@ -2023,7 +2036,7 @@ const [loading ,SetLoading] = useState(false)
                                       post.img_post.forEach((img, index) => {
                                         allMedia.push({
                                           type: "image",
-                                          src: `http://localhost:8000/posts/${img}`,
+                                          src: `${apiUrl}/posts/${img}`,
                                           key: `img-${index}`,
                                         });
                                       });
@@ -2309,11 +2322,11 @@ const [loading ,SetLoading] = useState(false)
                                       <img
                                         src={
                                           com.user_comment?.profilImage
-                                            ? com.user_comment.profilImage.startsWith(
+                                            ? com.user_comment.profilImage?.startsWith(
                                               "http"
                                             )
                                               ? com.user_comment.profilImage
-                                              : `http://localhost:8000/user/${com.user_comment.profilImage}`
+                                              : `${apiUrl}/user/${com.user_comment.profilImage}`
                                             : "/image/pngegg.png"
                                         }
                                         alt={`Image of ${com.user_comment?.name || "user"
@@ -2359,7 +2372,7 @@ const [loading ,SetLoading] = useState(false)
                             <img
                               src={
                                 post.user
-                                  ? `http://localhost:8000/user/${post.user.profilImage}`
+                                  ? `${apiUrl}/user/${post.user.profilImage}`
                                   : "/image/pngegg.png"
                               }
                               alt=""
@@ -2542,11 +2555,11 @@ const [loading ,SetLoading] = useState(false)
                                       <img
                                         src={
                                           com.user_comment?.profilImage
-                                            ? com.user_comment.profilImage.startsWith(
+                                            ? com.user_comment.profilImage?.startsWith(
                                               "http"
                                             )
                                               ? com.user_comment.profilImage
-                                              : `http://localhost:8000/user/${com.user_comment.profilImage}`
+                                              : `${apiUrl}/user/${com.user_comment.profilImage}`
                                             : "/image/pngegg.png"
                                         }
                                         alt={`Image of ${com.user_comment?.name || "user"

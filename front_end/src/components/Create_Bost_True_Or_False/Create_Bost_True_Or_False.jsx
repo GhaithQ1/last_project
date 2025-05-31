@@ -16,6 +16,7 @@ const Create_Bost_True_Or_False = () => {
   const Navigate = useNavigate();
   const [cookies] = useCookies(["token"]);
   const [Load_butt, setLoad_butt] = useState(false);
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   // تحديث الأسئلة
   const handleQuestionChange = (index, event) => {
@@ -47,7 +48,7 @@ const Create_Bost_True_Or_False = () => {
   // إرسال البيانات إلى الخادم
   const handleSubmit = () => {
     setLoad_butt(true);
-    axios.post('http://localhost:8000/api/v2/post/post_3', {
+    axios.post(`${apiUrl}/api/v2/post/post_3`, {
       questions: questions.map(q => ({
         question: q.question,
         condition: q.condition === 'true' ? true : false

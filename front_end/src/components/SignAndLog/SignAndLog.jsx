@@ -14,6 +14,7 @@ const SignAndLog = () => {
     const [password, setPassword] = useState('');
     const [passwordConfirm, setPasswordConfirm] = useState('');
     const [name, setName] = useState('');
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     // أخطاء منفصلة
     const [nameError, setNameError] = useState('');
@@ -67,7 +68,7 @@ const SignAndLog = () => {
         if (hasError) return;
 
         try {
-            const response = await axios.post('http://localhost:8000/api/v2/auth/sign_up', {
+            const response = await axios.post(`${apiUrl}/api/v2/auth/sign_up`, {
                 name,
                 email,
                 password,
@@ -97,7 +98,7 @@ const SignAndLog = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:8000/api/v2/auth/login', {
+            const response = await axios.post(`${apiUrl}/api/v2/auth/login`, {
                 email,
                 password,
             });
@@ -134,7 +135,7 @@ const SignAndLog = () => {
                                     const top = (window.innerHeight - height) / 1;
 
                                     window.open(
-                                        "http://localhost:8000/auth/google",
+                                        `${apiUrl}/auth/google`,
                                         "Google Login",
                                         `width=${width},height=${height},top=${top},left=${left}`
                                     );
@@ -189,7 +190,7 @@ const SignAndLog = () => {
                                     const top = (window.innerHeight - height) / 1;
 
                                     window.open(
-                                        "http://localhost:8000/auth/google",
+                                        `${apiUrl}/auth/google`,
                                         "Google Login",
                                         `width=${width},height=${height},top=${top},left=${left}`
                                     );

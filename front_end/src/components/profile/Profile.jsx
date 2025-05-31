@@ -127,6 +127,7 @@ const MediaGalleryModal = ({
 };
 
 const Profile = () => {
+  const apiUrl = import.meta.env.VITE_API_URL;
   const queryClient = useQueryClient();
   const [galleryModalOpen, setGalleryModalOpen] = useState(false);
   const [galleryMedia, setGalleryMedia] = useState([]);
@@ -142,6 +143,8 @@ const Profile = () => {
    const [Deleting_Please, setDeleting_Please] = useState(false);
   const [Confirm_deletionn, setConfirm_deletionn] = useState(false);
 
+  
+const Navigate = useNavigate();
 
 
   // const [Mydata, SetMydata] = useState();
@@ -195,7 +198,7 @@ const Profile = () => {
     try {
 
       const res = await axios.post(
-        `http://localhost:8000/api/v2/post/create_post_comments/${id_comment}`,
+        `${apiUrl}/api/v2/post/create_post_comments/${id_comment}`,
         {
           comment: data.get('comment'),
         },
@@ -227,7 +230,7 @@ const Profile = () => {
     try {
 
       await axios.post(
-        `http://localhost:8000/api/v2/post/toggle_post_like/${post._id}`,
+        `${apiUrl}/api/v2/post/toggle_post_like/${post._id}`,
         {},
         {
           headers: { Authorization: `Bearer ${cookies.token}` },
@@ -242,7 +245,7 @@ const Profile = () => {
   const bookMarks = async (id) => {
     try {
       await axios.post(
-        `http://localhost:8000/api/v2/auth/toggleSavedPost/${id}`,
+        `${apiUrl}/api/v2/auth/toggleSavedPost/${id}`,
         {},
         {
           headers: { Authorization: `Bearer ${cookies.token}` },
@@ -275,7 +278,7 @@ const Profile = () => {
 
       // إرسال البيانات إلى API
       const res = await axios.post(
-        `http://localhost:8000/api/v2/post/post_3_chick`, // URL الخاص بالـ API
+        `${apiUrl}/api/v2/post/post_3_chick`, // URL الخاص بالـ API
         {
           postId: IdPost,
           answers,
@@ -303,7 +306,7 @@ const Profile = () => {
 
       // إرسال البيانات إلى API
       const res = await axios.post(
-        `http://localhost:8000/api/v2/post/post_2_chick`, // URL الخاص بالـ API
+        `${apiUrl}/api/v2/post/post_2_chick`, // URL الخاص بالـ API
         {
           postId: IdPost,
           answers,
@@ -353,7 +356,7 @@ const Profile = () => {
 
       // إرسال البيانات إلى API
       const res = await axios.post(
-        `http://localhost:8000/api/v2/post/post_4_chick`, // URL الخاص بالـ API
+        `${apiUrl}/api/v2/post/post_4_chick`, // URL الخاص بالـ API
         {
           postId: IdPost,
           answers,
@@ -459,13 +462,14 @@ const Profile = () => {
     try {
       setDeleting_Please(true);
       await axios.delete(
-        `http://localhost:8000/api/v2/post/${Confirm_deletionnID}`,
+        `${apiUrl}/api/v2/post/${Confirm_deletionnID}`,
         {
           headers: { Authorization: `Bearer ${cookies.token}` },
         }
       );
       setDeleting_Please(false);
       setConfirm_deletionn(false);
+      BookmarkNone(Confirm_deletionnID)
 queryClient.invalidateQueries(['AllPost']);
     } catch (error) {
       console.error("Error fetching data", error);
@@ -480,10 +484,18 @@ queryClient.invalidateQueries(['AllPost']);
     }));
   };
 
+
+  const [none_Bookmark, setnone_Bookmark] = useState([]);
+
+    
+    const BookmarkNone = (id)=>{
+      setnone_Bookmark([...none_Bookmark , id])
+      // console.log(none_Bookmark)
+    }
+
   return (
     <>
       <div className="home">
-        {isFetching &&  <Loading_Filter_post />}
         <div className="container">
           {Confirm_deletionn ? (
             <div className="Confirm_deletion">
@@ -506,7 +518,7 @@ queryClient.invalidateQueries(['AllPost']);
                   >
                     Cancel
                   </button>
-                  <button className="card-button primary" onClick={Delete_Post}>
+                  <button className="card-button primary" onClick={()=>{ Delete_Post(); }}>
                     Delete
                   </button>
                 </div>
@@ -543,8 +555,8 @@ queryClient.invalidateQueries(['AllPost']);
                     <img
                       src={
                         MyData.Cover_image
-                          ? `http://localhost:8000/user/${MyData.Cover_image}`
-                          : "./image/back1.jpg"
+                          ? `${apiUrl}/user/${MyData.Cover_image}`
+                          : "../image/back1.jpg"
                       }
                       alt=""
                     />
@@ -553,9 +565,9 @@ queryClient.invalidateQueries(['AllPost']);
                     <img
                       src={
                         MyData.profilImage
-                          ? MyData.profilImage.startsWith("http")
+                          ? MyData.profilImage?.startsWith("http")
                             ? MyData.profilImage
-                            : `http://localhost:8000/user/${MyData.profilImage}`
+                            : `${apiUrl}/user/${MyData.profilImage}`
                           : "/image/pngegg.png"
                       }
                       alt={`Image of ${MyData.name}`}
@@ -631,11 +643,44 @@ queryClient.invalidateQueries(['AllPost']);
                     
                               return (
                                 <div key={index} className="all_bost click_and_listen posts1">
+                                           <div key={post._id} className="remove_div-but">
+                              {/* أيقونة النقاط الثلاث */}
+                              <FontAwesomeIcon
+                                className="buttonnn"
+                                icon={faEllipsisVertical}
+                                onClick={(e) => toggleMenu(e, post._id)} // تمرير الـ event والإحداثيات
+                                style={{ cursor: "pointer" }}
+                              />
+
+                              {/* قائمة الحذف */}
+                              <div
+                                id={`remove_but-${post._id}`} // إضافة ID خاص بكل قائمة
+                                className="remove_but"
+                                style={{
+                                  display: showMenus[post._id]
+                                    ? "block"
+                                    : "none", // عرض/إخفاء بناءً على الـ ID
+                                  position: "absolute", // استخدم position absolute لتحديد مكان القائمة
+                                }}
+                              >
+                                <p
+                                  onClick={() => {
+                                    setConfirm_deletionnID(post._id);
+                                    setConfirm_deletionn(true);
+                                  }}
+                                >
+                                  <span>
+                                    <FontAwesomeIcon icon={faTrash} />
+                                  </span>{" "}
+                                  Remove
+                                </p>
+                              </div>
+                            </div>
                                   <div className="name_shoole">
                                     <img
                                       src={
                                         post.user
-                                          ? `http://localhost:8000/user/${post.user.profilImage}`
+                                          ? `${apiUrl}/user/${post.user.profilImage}`
                                           : "/image/pngegg.png"
                                       }
                                       alt=""
@@ -698,7 +743,7 @@ queryClient.invalidateQueries(['AllPost']);
                                           <img
                                             src={
                                               pos
-                                                ? `http://localhost:8000/posts/${pos.postImage}`
+                                                ? `${apiUrl}/posts/${pos.postImage}`
                                                 : null
                                             }
                                             alt={`Image ${pos._id}`}
@@ -707,7 +752,7 @@ queryClient.invalidateQueries(['AllPost']);
                                             id={pos._id}
                                             src={
                                               pos
-                                                ? `http://localhost:8000/posts/${pos.postAudio}`
+                                                ? `${apiUrl}/posts/${pos.postAudio}`
                                                 : null
                                             }
                                           ></audio>
@@ -841,11 +886,11 @@ queryClient.invalidateQueries(['AllPost']);
                                               <img
                                                 src={
                                                   com.user_comment?.profilImage
-                                                    ? com.user_comment.profilImage.startsWith(
+                                                    ? com.user_comment.profilImage?.startsWith(
                                                       "http"
                                                     )
                                                       ? com.user_comment.profilImage
-                                                      : `http://localhost:8000/user/${com.user_comment.profilImage}`
+                                                      : `${apiUrl}/user/${com.user_comment.profilImage}`
                                                     : "/image/pngegg.png"
                                                 }
                                                 alt={`Image of ${com.user_comment?.name || "user"
@@ -885,11 +930,44 @@ queryClient.invalidateQueries(['AllPost']);
                             } else if (post.type === "post_2") {
                               return (
                                 <div key={index} className="all_bost choose_the_correct_answer">
+                                           <div key={post._id} className="remove_div-but">
+                              {/* أيقونة النقاط الثلاث */}
+                              <FontAwesomeIcon
+                                className="buttonnn"
+                                icon={faEllipsisVertical}
+                                onClick={(e) => toggleMenu(e, post._id)} // تمرير الـ event والإحداثيات
+                                style={{ cursor: "pointer" }}
+                              />
+
+                              {/* قائمة الحذف */}
+                              <div
+                                id={`remove_but-${post._id}`} // إضافة ID خاص بكل قائمة
+                                className="remove_but"
+                                style={{
+                                  display: showMenus[post._id]
+                                    ? "block"
+                                    : "none", // عرض/إخفاء بناءً على الـ ID
+                                  position: "absolute", // استخدم position absolute لتحديد مكان القائمة
+                                }}
+                              >
+                                <p
+                                  onClick={() => {
+                                    setConfirm_deletionnID(post._id);
+                                    setConfirm_deletionn(true);
+                                  }}
+                                >
+                                  <span>
+                                    <FontAwesomeIcon icon={faTrash} />
+                                  </span>{" "}
+                                  Remove
+                                </p>
+                              </div>
+                            </div>
                                   <div className="name_shoole">
                                     <img
                                       src={
                                         post.user
-                                          ? `http://localhost:8000/user/${post.user.profilImage}`
+                                          ? `${apiUrl}/user/${post.user.profilImage}`
                                           : "/image/pngegg.png"
                                       }
                                       alt={`Image of ${post.name}`}
@@ -980,7 +1058,10 @@ queryClient.invalidateQueries(['AllPost']);
                                           // ما تعمل refetch أو invalidateQueries هون، أو:
                                           queryClient.invalidateQueries(['AllPost']);
                     
-                                          setrelod(false);
+                                               setTimeout(() => {
+                        
+                        setrelod(false);
+                      }, 1500);
                                         } catch (error) {
                                           console.error("فشل تحديث الجواب:", error);
                                         }
@@ -1177,11 +1258,11 @@ queryClient.invalidateQueries(['AllPost']);
                                               <img
                                                 src={
                                                   com.user_comment?.profilImage
-                                                    ? com.user_comment.profilImage.startsWith(
+                                                    ? com.user_comment.profilImage?.startsWith(
                                                       "http"
                                                     )
                                                       ? com.user_comment.profilImage
-                                                      : `http://localhost:8000/user/${com.user_comment.profilImage}`
+                                                      : `${apiUrl}/user/${com.user_comment.profilImage}`
                                                     : "/image/pngegg.png"
                                                 }
                                                 alt={`Image of ${com.user_comment?.name || "user"
@@ -1221,11 +1302,44 @@ queryClient.invalidateQueries(['AllPost']);
                             } else if (post.type === "post_3") {
                               return (
                                 <div key={index} className="all_bost bost_true_or-false posts3">
+                                           <div key={post._id} className="remove_div-but">
+                              {/* أيقونة النقاط الثلاث */}
+                              <FontAwesomeIcon
+                                className="buttonnn"
+                                icon={faEllipsisVertical}
+                                onClick={(e) => toggleMenu(e, post._id)} // تمرير الـ event والإحداثيات
+                                style={{ cursor: "pointer" }}
+                              />
+
+                              {/* قائمة الحذف */}
+                              <div
+                                id={`remove_but-${post._id}`} // إضافة ID خاص بكل قائمة
+                                className="remove_but"
+                                style={{
+                                  display: showMenus[post._id]
+                                    ? "block"
+                                    : "none", // عرض/إخفاء بناءً على الـ ID
+                                  position: "absolute", // استخدم position absolute لتحديد مكان القائمة
+                                }}
+                              >
+                                <p
+                                  onClick={() => {
+                                    setConfirm_deletionnID(post._id);
+                                    setConfirm_deletionn(true);
+                                  }}
+                                >
+                                  <span>
+                                    <FontAwesomeIcon icon={faTrash} />
+                                  </span>{" "}
+                                  Remove
+                                </p>
+                              </div>
+                            </div>
                                   <div className="name_shoole">
                                     <img
                                       src={
                                         post.user
-                                          ? `http://localhost:8000/user/${post.user.profilImage}`
+                                          ? `${apiUrl}/user/${post.user.profilImage}`
                                           : "/image/pngegg.png"
                                       }
                                       alt=""
@@ -1322,7 +1436,10 @@ queryClient.invalidateQueries(['AllPost']);
                                       try {
                                         await chick_post_3(post._id, questionId, answer ? true : false);
                                         queryClient.invalidateQueries(["AllPost"]);
-                                        setrelod(false);
+                                              setTimeout(() => {
+                        
+                        setrelod(false);
+                      }, 1500);
                     
                                       } catch (err) {
                                         console.error("فشل إرسال الإجابة:", err);
@@ -1517,11 +1634,11 @@ queryClient.invalidateQueries(['AllPost']);
                                               <img
                                                 src={
                                                   com.user_comment?.profilImage
-                                                    ? com.user_comment.profilImage.startsWith(
+                                                    ? com.user_comment.profilImage?.startsWith(
                                                       "http"
                                                     )
                                                       ? com.user_comment.profilImage
-                                                      : `http://localhost:8000/user/${com.user_comment.profilImage}`
+                                                      : `${apiUrl}/user/${com.user_comment.profilImage}`
                                                     : "/image/pngegg.png"
                                                 }
                                                 alt={`Image of ${com.user_comment?.name || "user"
@@ -1561,11 +1678,44 @@ queryClient.invalidateQueries(['AllPost']);
                             } else if (post.type === "post_4") {
                               return (
                                 <div key={index} className="all_bost image_and_answer posts4">
+                                           <div key={post._id} className="remove_div-but">
+                              {/* أيقونة النقاط الثلاث */}
+                              <FontAwesomeIcon
+                                className="buttonnn"
+                                icon={faEllipsisVertical}
+                                onClick={(e) => toggleMenu(e, post._id)} // تمرير الـ event والإحداثيات
+                                style={{ cursor: "pointer" }}
+                              />
+
+                              {/* قائمة الحذف */}
+                              <div
+                                id={`remove_but-${post._id}`} // إضافة ID خاص بكل قائمة
+                                className="remove_but"
+                                style={{
+                                  display: showMenus[post._id]
+                                    ? "block"
+                                    : "none", // عرض/إخفاء بناءً على الـ ID
+                                  position: "absolute", // استخدم position absolute لتحديد مكان القائمة
+                                }}
+                              >
+                                <p
+                                  onClick={() => {
+                                    setConfirm_deletionnID(post._id);
+                                    setConfirm_deletionn(true);
+                                  }}
+                                >
+                                  <span>
+                                    <FontAwesomeIcon icon={faTrash} />
+                                  </span>{" "}
+                                  Remove
+                                </p>
+                              </div>
+                            </div>
                                   <div className="name_shoole">
                                     <img
                                       src={
                                         post.user
-                                          ? `http://localhost:8000/user/${post.user.profilImage}`
+                                          ? `${apiUrl}/user/${post.user.profilImage}`
                                           : "/image/pngegg.png"
                                       }
                                       alt=""
@@ -1649,7 +1799,10 @@ queryClient.invalidateQueries(['AllPost']);
                                       try {
                                         await chick_post_4(post._id, questionId, answer);
                                         queryClient.invalidateQueries(["AllPost"]);
-                                        setrelod(false);
+                                            setTimeout(() => {
+                        
+                        setrelod(false);
+                      }, 1500);
                     
                                       } catch (err) {
                                         console.error("فشل إرسال الإجابة:", err);
@@ -1678,7 +1831,7 @@ queryClient.invalidateQueries(['AllPost']);
                     
                                               <div className="img_ans">
                                                 <img
-                                                  src={`http://localhost:8000/posts/${item.img}`}
+                                                  src={`${apiUrl}/posts/${item.img}`}
                                                   alt="Question"
                                                 />
                                                 {item.question ? <h2>{item.question}</h2> : null}
@@ -1850,11 +2003,11 @@ queryClient.invalidateQueries(['AllPost']);
                                               <img
                                                 src={
                                                   com.user_comment?.profilImage
-                                                    ? com.user_comment.profilImage.startsWith(
+                                                    ? com.user_comment.profilImage?.startsWith(
                                                       "http"
                                                     )
                                                       ? com.user_comment.profilImage
-                                                      : `http://localhost:8000/user/${com.user_comment.profilImage}`
+                                                      : `${apiUrl}/user/${com.user_comment.profilImage}`
                                                     : "/image/pngegg.png"
                                                 }
                                                 alt={`Image of ${com.user_comment?.name || "user"
@@ -1893,7 +2046,7 @@ queryClient.invalidateQueries(['AllPost']);
                               );
                             } else if (post.type === "post_5") {
                               return (
-                                <div key={index} className="all_bost video_img_word posts4">
+                                <div key={index} className={`all_bost video_img_word posts4 ${none_Bookmark.includes(post._id) ? "fade-outtt" : ""}`}>
                                     <div key={post._id} className="remove_div-but">
                               {/* أيقونة النقاط الثلاث */}
                               <FontAwesomeIcon
@@ -1930,10 +2083,10 @@ queryClient.invalidateQueries(['AllPost']);
                                   <div className="name_shoole">
                                     <img
                                       src={
-                                        post.user
-                                          ? post.user.profilImage.startsWith("http")
+                                        post.user?.profilImage
+                                          ? post.user.profilImage?.startsWith("http")
                                             ? post.user.profilImage
-                                            : `http://localhost:8000/user/${post.user.profilImage}`
+                                            : `${apiUrl}/user/${post.user.profilImage}`
                                           : "/image/pngegg.png"
                                       }
                                       alt={`Image of ${post.user.name}`}
@@ -2003,7 +2156,7 @@ queryClient.invalidateQueries(['AllPost']);
                                               post.video_post.forEach((video, index) => {
                                                 allMedia.push({
                                                   type: "video",
-                                                  src: `http://localhost:8000/posts/${video}`,
+                                                  src: `${apiUrl}/posts/${video}`,
                                                   key: `video-${index}`,
                                                 });
                                               });
@@ -2014,7 +2167,7 @@ queryClient.invalidateQueries(['AllPost']);
                                               post.img_post.forEach((img, index) => {
                                                 allMedia.push({
                                                   type: "image",
-                                                  src: `http://localhost:8000/posts/${img}`,
+                                                  src: `${apiUrl}/posts/${img}`,
                                                   key: `img-${index}`,
                                                 });
                                               });
@@ -2300,11 +2453,11 @@ queryClient.invalidateQueries(['AllPost']);
                                               <img
                                                 src={
                                                   com.user_comment?.profilImage
-                                                    ? com.user_comment.profilImage.startsWith(
+                                                    ? com.user_comment.profilImage?.startsWith(
                                                       "http"
                                                     )
                                                       ? com.user_comment.profilImage
-                                                      : `http://localhost:8000/user/${com.user_comment.profilImage}`
+                                                      : `${apiUrl}/user/${com.user_comment.profilImage}`
                                                     : "/image/pngegg.png"
                                                 }
                                                 alt={`Image of ${com.user_comment?.name || "user"
@@ -2346,11 +2499,44 @@ queryClient.invalidateQueries(['AllPost']);
                             } else if (post.type === "post_6") {
                               return (
                                 <div key={index} className="all_bost ifrems posts6">
+                                           <div key={post._id} className="remove_div-but">
+                              {/* أيقونة النقاط الثلاث */}
+                              <FontAwesomeIcon
+                                className="buttonnn"
+                                icon={faEllipsisVertical}
+                                onClick={(e) => toggleMenu(e, post._id)} // تمرير الـ event والإحداثيات
+                                style={{ cursor: "pointer" }}
+                              />
+
+                              {/* قائمة الحذف */}
+                              <div
+                                id={`remove_but-${post._id}`} // إضافة ID خاص بكل قائمة
+                                className="remove_but"
+                                style={{
+                                  display: showMenus[post._id]
+                                    ? "block"
+                                    : "none", // عرض/إخفاء بناءً على الـ ID
+                                  position: "absolute", // استخدم position absolute لتحديد مكان القائمة
+                                }}
+                              >
+                                <p
+                                  onClick={() => {
+                                    setConfirm_deletionnID(post._id);
+                                    setConfirm_deletionn(true);
+                                  }}
+                                >
+                                  <span>
+                                    <FontAwesomeIcon icon={faTrash} />
+                                  </span>{" "}
+                                  Remove
+                                </p>
+                              </div>
+                            </div>
                                   <div className="name_shoole">
                                     <img
                                       src={
                                         post.user
-                                          ? `http://localhost:8000/user/${post.user.profilImage}`
+                                          ? `${apiUrl}/user/${post.user.profilImage}`
                                           : "/image/pngegg.png"
                                       }
                                       alt=""
@@ -2533,11 +2719,11 @@ queryClient.invalidateQueries(['AllPost']);
                                               <img
                                                 src={
                                                   com.user_comment?.profilImage
-                                                    ? com.user_comment.profilImage.startsWith(
+                                                    ? com.user_comment.profilImage?.startsWith(
                                                       "http"
                                                     )
                                                       ? com.user_comment.profilImage
-                                                      : `http://localhost:8000/user/${com.user_comment.profilImage}`
+                                                      : `${apiUrl}/user/${com.user_comment.profilImage}`
                                                     : "/image/pngegg.png"
                                                 }
                                                 alt={`Image of ${com.user_comment?.name || "user"

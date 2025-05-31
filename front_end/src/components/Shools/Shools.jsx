@@ -7,8 +7,9 @@ import { useMyData } from "../UseMydata";
 
 import { useNavigate } from "react-router-dom";
 const Shools = () => {
+  const apiUrl = import.meta.env.VITE_API_URL;
   const [cookies] = useCookies(["token"]);
-  const API = "http://localhost:8000/api/v2";
+  const API = `${apiUrl}/api/v2`;
 
     const Navigate = useNavigate();
   
@@ -44,7 +45,7 @@ const Shools = () => {
         {MyData && allUsers
           ?.filter(
             (school) =>
-              school?.role === "employee" 
+              school?.role === "employee" &&  school._id !== MyData?._id
           )
           .map((school) => (
             <div className="main_info" key={school?._id}>
@@ -52,7 +53,7 @@ const Shools = () => {
                 <img
                   src={
                     school?.profilImage
-                      ? `http://localhost:8000/user/${school?.profilImage}`
+                      ? `${apiUrl}/user/${school?.profilImage}`
                       : "/image/pngegg.png"
                   }
                   alt={`Image of ${school?.name}`}

@@ -112,7 +112,7 @@ const Bosts = () => {
   const [likeds, setLikeds] = useState(false);
   const [id_comment, setId_comment] = useState("")
 
-
+const apiUrl = import.meta.env.VITE_API_URL;
   // const [Mydata, SetMydata] = useState();
   const { data: getmydata } = useMyData();
   const Mydata = getmydata?._id
@@ -163,7 +163,7 @@ const Bosts = () => {
     try {
 
       const res = await axios.post(
-        `http://localhost:8000/api/v2/post/create_post_comments/${id_comment}`,
+        `${apiUrl}/api/v2/post/create_post_comments/${id_comment}`,
         {
           comment: data.get('comment'),
         },
@@ -171,6 +171,7 @@ const Bosts = () => {
           headers: { Authorization: `Bearer ${cookies.token}` },
         }
       );
+      queryClient.invalidateQueries(['AllPost'])
       SetNewComment(res.data.data.comments);
 
     } catch (error) {
@@ -194,7 +195,7 @@ const Bosts = () => {
     try {
 
       await axios.post(
-        `http://localhost:8000/api/v2/post/toggle_post_like/${post._id}`,
+        `${apiUrl}/api/v2/post/toggle_post_like/${post._id}`,
         {},
         {
           headers: { Authorization: `Bearer ${cookies.token}` },
@@ -209,7 +210,7 @@ const Bosts = () => {
   const bookMarks = async (id) => {
     try {
       await axios.post(
-        `http://localhost:8000/api/v2/auth/toggleSavedPost/${id}`,
+        `${apiUrl}/api/v2/auth/toggleSavedPost/${id}`,
         {},
         {
           headers: { Authorization: `Bearer ${cookies.token}` },
@@ -243,7 +244,7 @@ const Bosts = () => {
 
       // إرسال البيانات إلى API
       const res = await axios.post(
-        `http://localhost:8000/api/v2/post/post_3_chick`, // URL الخاص بالـ API
+        `${apiUrl}/api/v2/post/post_3_chick`, // URL الخاص بالـ API
         {
           postId: IdPost,
           answers,
@@ -271,7 +272,7 @@ const Bosts = () => {
 
       // إرسال البيانات إلى API
       const res = await axios.post(
-        `http://localhost:8000/api/v2/post/post_2_chick`, // URL الخاص بالـ API
+        `${apiUrl}/api/v2/post/post_2_chick`, // URL الخاص بالـ API
         {
           postId: IdPost,
           answers,
@@ -321,7 +322,7 @@ const Bosts = () => {
 
       // إرسال البيانات إلى API
       const res = await axios.post(
-        `http://localhost:8000/api/v2/post/post_4_chick`, // URL الخاص بالـ API
+        `${apiUrl}/api/v2/post/post_4_chick`, // URL الخاص بالـ API
         {
           postId: IdPost,
           answers,
@@ -471,7 +472,7 @@ const Bosts = () => {
                 <img
                   src={
                     post.user
-                      ? `http://localhost:8000/user/${post.user.profilImage}`
+                      ? `${apiUrl}/user/${post.user.profilImage}`
                       : "/image/pngegg.png"
                   }
                   alt=""
@@ -534,7 +535,7 @@ const Bosts = () => {
                       <img
                         src={
                           pos
-                            ? `http://localhost:8000/posts/${pos.postImage}`
+                            ? `${apiUrl}/posts/${pos.postImage}`
                             : null
                         }
                         alt={`Image ${pos._id}`}
@@ -543,7 +544,7 @@ const Bosts = () => {
                         id={pos._id}
                         src={
                           pos
-                            ? `http://localhost:8000/posts/${pos.postAudio}`
+                            ? `${apiUrl}/posts/${pos.postAudio}`
                             : null
                         }
                       ></audio>
@@ -626,7 +627,7 @@ const Bosts = () => {
                     <span>Comment</span>
                   </div>
                   <div className="infotest">
-                    <svg className="inter-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" /></svg>
+                    <svg className="inter-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" /></svg>
                     <span>Share</span>
                   </div>
 
@@ -651,7 +652,7 @@ const Bosts = () => {
                             ? "active_book"
                             : ""
                           }`}
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z" /></svg>
+                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z" /></svg>
                       <span>Save</span>
                     </div>
                   }
@@ -681,7 +682,7 @@ const Bosts = () => {
                                   "http"
                                 )
                                   ? com.user_comment.profilImage
-                                  : `http://localhost:8000/user/${com.user_comment.profilImage}`
+                                  : `${apiUrl}/user/${com.user_comment.profilImage}`
                                 : "/image/pngegg.png"
                             }
                             alt={`Image of ${com.user_comment?.name || "user"
@@ -725,7 +726,7 @@ const Bosts = () => {
                 <img
                   src={
                     post.user
-                      ? `http://localhost:8000/user/${post.user.profilImage}`
+                      ? `${apiUrl}/user/${post.user.profilImage}`
                       : "/image/pngegg.png"
                   }
                   alt={`Image of ${post.name}`}
@@ -815,8 +816,10 @@ const Bosts = () => {
                       await chick_post_2(post._id, questionId, answer);
                       // ما تعمل refetch أو invalidateQueries هون، أو:
                       queryClient.invalidateQueries(['AllPost']);
-
-                      setrelod(false);
+                      setTimeout(() => {
+                        
+                        setrelod(false);
+                      }, 1500);
                     } catch (error) {
                       console.error("فشل تحديث الجواب:", error);
                     }
@@ -964,7 +967,7 @@ const Bosts = () => {
                     <span>Comment</span>
                   </div>
                   <div className="infotest">
-                    <svg className="inter-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" /></svg>
+                    <svg className="inter-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" /></svg>
                     <span>Share</span>
                   </div>
 
@@ -987,7 +990,7 @@ const Bosts = () => {
                             ? "active_book"
                             : ""
                           }`}
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z" /></svg>
+                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z" /></svg>
                       <span>Save</span>
                     </div>
                   }
@@ -1017,7 +1020,7 @@ const Bosts = () => {
                                   "http"
                                 )
                                   ? com.user_comment.profilImage
-                                  : `http://localhost:8000/user/${com.user_comment.profilImage}`
+                                  : `${apiUrl}/user/${com.user_comment.profilImage}`
                                 : "/image/pngegg.png"
                             }
                             alt={`Image of ${com.user_comment?.name || "user"
@@ -1061,7 +1064,7 @@ const Bosts = () => {
                 <img
                   src={
                     post.user
-                      ? `http://localhost:8000/user/${post.user.profilImage}`
+                      ? `${apiUrl}/user/${post.user.profilImage}`
                       : "/image/pngegg.png"
                   }
                   alt=""
@@ -1158,7 +1161,10 @@ const Bosts = () => {
                   try {
                     await chick_post_3(post._id, questionId, answer ? true : false);
                     queryClient.invalidateQueries(["AllPost"]);
-                    setrelod(false);
+                          setTimeout(() => {
+                        
+                        setrelod(false);
+                      }, 1500);
 
                   } catch (err) {
                     console.error("فشل إرسال الإجابة:", err);
@@ -1304,7 +1310,7 @@ const Bosts = () => {
                     <span>Comment</span>
                   </div>
                   <div className="infotest">
-                    <svg className="inter-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" /></svg>
+                    <svg className="inter-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" /></svg>
                     <span>Share</span>
                   </div>
 
@@ -1327,7 +1333,7 @@ const Bosts = () => {
                             ? "active_book"
                             : ""
                           }`}
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z" /></svg>
+                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z" /></svg>
                       <span>Save</span>
                     </div>
                   }
@@ -1357,7 +1363,7 @@ const Bosts = () => {
                                   "http"
                                 )
                                   ? com.user_comment.profilImage
-                                  : `http://localhost:8000/user/${com.user_comment.profilImage}`
+                                  : `${apiUrl}/user/${com.user_comment.profilImage}`
                                 : "/image/pngegg.png"
                             }
                             alt={`Image of ${com.user_comment?.name || "user"
@@ -1401,7 +1407,7 @@ const Bosts = () => {
                 <img
                   src={
                     post.user
-                      ? `http://localhost:8000/user/${post.user.profilImage}`
+                      ? `${apiUrl}/user/${post.user.profilImage}`
                       : "/image/pngegg.png"
                   }
                   alt=""
@@ -1485,7 +1491,10 @@ const Bosts = () => {
                   try {
                     await chick_post_4(post._id, questionId, answer);
                     queryClient.invalidateQueries(["AllPost"]);
-                    setrelod(false);
+                         setTimeout(() => {
+                        
+                        setrelod(false);
+                      }, 1500);
 
                   } catch (err) {
                     console.error("فشل إرسال الإجابة:", err);
@@ -1514,7 +1523,7 @@ const Bosts = () => {
 
                           <div className="img_ans">
                             <img
-                              src={`http://localhost:8000/posts/${item.img}`}
+                              src={`${apiUrl}/posts/${item.img}`}
                               alt="Question"
                             />
                             {item.question ? <h2>{item.question}</h2> : null}
@@ -1637,7 +1646,7 @@ const Bosts = () => {
                     <span>Comment</span>
                   </div>
                   <div className="infotest">
-                    <svg className="inter-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" /></svg>
+                    <svg className="inter-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" /></svg>
                     <span>Share</span>
                   </div>
 
@@ -1660,7 +1669,7 @@ const Bosts = () => {
                             ? "active_book"
                             : ""
                           }`}
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z" /></svg>
+                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z" /></svg>
                       <span>Save</span>
                     </div>
                   }
@@ -1690,7 +1699,7 @@ const Bosts = () => {
                                   "http"
                                 )
                                   ? com.user_comment.profilImage
-                                  : `http://localhost:8000/user/${com.user_comment.profilImage}`
+                                  : `${apiUrl}/user/${com.user_comment.profilImage}`
                                 : "/image/pngegg.png"
                             }
                             alt={`Image of ${com.user_comment?.name || "user"
@@ -1733,13 +1742,15 @@ const Bosts = () => {
               <div className="name_shoole">
                 <img
                   src={
-                    post.user
-                      ? post.user.profilImage.startsWith("http")
-                        ? post.user.profilImage
-                        : `http://localhost:8000/user/${post.user.profilImage}`
+                    post.user?.profilImage
+                      ? 
+                      post.user.profilImage?.startsWith("http")
+                        ? post.user?.profilImage 
+                        : `${apiUrl}/user/${post.user.profilImage}`
                       : "/image/pngegg.png"
                   }
-                  alt={`Image of ${post.user.name}`}
+                  
+                  alt={`Image of ${post.user?.name}`}
                 />
                 <div className="date_shoole">
                   <p>{post.user ? post.user.name : null}{post?.user?.role === "employee" && (<svg className="documentation" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10.007 2.10377C8.60544 1.65006 7.08181 2.28116 6.41156 3.59306L5.60578 5.17023C5.51004 5.35763 5.35763 5.51004 5.17023 5.60578L3.59306 6.41156C2.28116 7.08181 1.65006 8.60544 2.10377 10.007L2.64923 11.692C2.71404 11.8922 2.71404 12.1078 2.64923 12.308L2.10377 13.993C1.65006 15.3946 2.28116 16.9182 3.59306 17.5885L5.17023 18.3942C5.35763 18.49 5.51004 18.6424 5.60578 18.8298L6.41156 20.407C7.08181 21.7189 8.60544 22.35 10.007 21.8963L11.692 21.3508C11.8922 21.286 12.1078 21.286 12.308 21.3508L13.993 21.8963C15.3946 22.35 16.9182 21.7189 17.5885 20.407L18.3942 18.8298C18.49 18.6424 18.6424 18.49 18.8298 18.3942L20.407 17.5885C21.7189 16.9182 22.35 15.3946 21.8963 13.993L21.3508 12.308C21.286 12.1078 21.286 11.8922 21.3508 11.692L21.8963 10.007C22.35 8.60544 21.7189 7.08181 20.407 6.41156L18.8298 5.60578C18.6424 5.51004 18.49 5.35763 18.3942 5.17023L17.5885 3.59306C16.9182 2.28116 15.3946 1.65006 13.993 2.10377L12.308 2.64923C12.1078 2.71403 11.8922 2.71404 11.692 2.64923L10.007 2.10377ZM6.75977 11.7573L8.17399 10.343L11.0024 13.1715L16.6593 7.51465L18.0735 8.92886L11.0024 15.9999L6.75977 11.7573Z"></path></svg>)}
@@ -1806,7 +1817,7 @@ const Bosts = () => {
                           post.video_post.forEach((video, index) => {
                             allMedia.push({
                               type: "video",
-                              src: `http://localhost:8000/posts/${video}`,
+                              src: `${apiUrl}/posts/${video}`,
                               key: `video-${index}`,
                             });
                           });
@@ -1817,7 +1828,7 @@ const Bosts = () => {
                           post.img_post.forEach((img, index) => {
                             allMedia.push({
                               type: "image",
-                              src: `http://localhost:8000/posts/${img}`,
+                              src: `${apiUrl}/posts/${img}`,
                               key: `img-${index}`,
                             });
                           });
@@ -2055,7 +2066,7 @@ const Bosts = () => {
                     <span>Comment</span>
                   </div>
                   <div className="infotest">
-                    <svg className="inter-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" /></svg>
+                    <svg className="inter-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" /></svg>
                     <span>Share</span>
                   </div>
 
@@ -2078,7 +2089,7 @@ const Bosts = () => {
                             ? "active_book"
                             : ""
                           }`}
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z" /></svg>
+                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z" /></svg>
                       <span>Save</span>
                     </div>
                   }
@@ -2107,7 +2118,7 @@ const Bosts = () => {
                                   "http"
                                 )
                                   ? com.user_comment.profilImage
-                                  : `http://localhost:8000/user/${com.user_comment.profilImage}`
+                                  : `${apiUrl}/user/${com.user_comment.profilImage}`
                                 : "/image/pngegg.png"
                             }
                             alt={`Image of ${com.user_comment?.name || "user"
@@ -2153,7 +2164,7 @@ const Bosts = () => {
                 <img
                   src={
                     post.user
-                      ? `http://localhost:8000/user/${post.user.profilImage}`
+                      ? `${apiUrl}/user/${post.user.profilImage}`
                       : "/image/pngegg.png"
                   }
                   alt=""
@@ -2288,7 +2299,7 @@ const Bosts = () => {
                     <span>Comment</span>
                   </div>
                   <div className="infotest">
-                    <svg className="inter-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" /></svg>
+                    <svg className="inter-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" /></svg>
                     <span>Share</span>
                   </div>
 
@@ -2311,7 +2322,7 @@ const Bosts = () => {
                             ? "active_book"
                             : ""
                           }`}
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z" /></svg>
+                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z" /></svg>
                       <span>Save</span>
                     </div>
                   }
@@ -2340,7 +2351,7 @@ const Bosts = () => {
                                   "http"
                                 )
                                   ? com.user_comment.profilImage
-                                  : `http://localhost:8000/user/${com.user_comment.profilImage}`
+                                  : `${apiUrl}/user/${com.user_comment.profilImage}`
                                 : "/image/pngegg.png"
                             }
                             alt={`Image of ${com.user_comment?.name || "user"

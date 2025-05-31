@@ -28,6 +28,9 @@ const Chat = () => {
   const { data: MyData} = useMyData();
   const { data: allUsers} = useAllUsers();
 
+  
+const apiUrl = import.meta.env.VITE_API_URL;
+
 
 
 
@@ -84,7 +87,7 @@ const Chat = () => {
 
   // ====================================================
 
-  const API = "http://localhost:8000/api/v2";
+  const API = `${apiUrl}/api/v2`;
 
   const headers = {
     headers: { Authorization: `Bearer ${cookies.token}` },
@@ -289,7 +292,7 @@ queryClient.invalidateQueries(['AllUser']);
                     friend?.profilImage
                       ? friend.profilImage.startsWith("http")
                         ? friend.profilImage
-                        : `http://localhost:8000/user/${friend.profilImage}`
+                        : `${apiUrl}/user/${friend.profilImage}`
                       : "/image/pngegg.png"
                   }
                   alt={`Image of ${friend?.name}`}
@@ -333,7 +336,7 @@ queryClient.invalidateQueries(['AllUser']);
                         user.profilImage
                           ? user.profilImage.startsWith("http")
                             ? user.profilImage
-                            : `http://localhost:8000/user/${user.profilImage}`
+                            : `${apiUrl}/user/${user.profilImage}`
                           : "/image/pngegg.png"
                       }
                       alt={`Image of ${user.name}`}

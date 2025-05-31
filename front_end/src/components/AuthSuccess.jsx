@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 const AuthSuccess = () => {
+  const apiUrl = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const [_, setCookie] = useCookies([]);
 
@@ -20,7 +21,7 @@ const AuthSuccess = () => {
     // الآن استدعِ بيانات المستخدم من الباكند
     const fetchUser = async () => {
       try {
-        const res = await fetch("http://localhost:8000/api/userinfo", {
+        const res = await fetch(`${apiUrl}/api/userinfo`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

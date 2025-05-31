@@ -95,6 +95,7 @@ const Create_menu = () => {
       tooltip: "Embed external content such as YouTube videos or interactive tools using an iframe."
     }
   ];
+  const apiUrl = import.meta.env.VITE_API_URL;
   
   
 
@@ -106,7 +107,7 @@ const Create_menu = () => {
     Mydata.profilImage
       ? Mydata.profilImage.startsWith("http")
         ? Mydata.profilImage
-        : `http://localhost:8000/user/${Mydata.profilImage}`
+        : `${apiUrl}/user/${Mydata.profilImage}`
       : "/image/pngegg.png"
   }
   alt={`Image of ${Mydata.name}`}

@@ -106,7 +106,7 @@ const BookMark = () => {
   const [likeds, setLikeds] = useState(false);
   const [id_comment, setId_comment] = useState("")
 
-
+const apiUrl = import.meta.env.VITE_API_URL;
   // const [Mydata, SetMydata] = useState();
   const { data: getmydata } = useMyData();
   const Mydata = getmydata?._id
@@ -157,7 +157,7 @@ const BookMark = () => {
     try {
 
       const res = await axios.post(
-        `http://localhost:8000/api/v2/post/create_post_comments/${id_comment}`,
+        `${apiUrl}/api/v2/post/create_post_comments/${id_comment}`,
         {
           comment: data.get('comment'),
         },
@@ -165,6 +165,7 @@ const BookMark = () => {
           headers: { Authorization: `Bearer ${cookies.token}` },
         }
       );
+      queryClient.invalidateQueries(['AllPost'])
       SetNewComment(res.data.data.comments);
 
     } catch (error) {
@@ -188,7 +189,7 @@ const BookMark = () => {
     try {
 
       await axios.post(
-        `http://localhost:8000/api/v2/post/toggle_post_like/${post._id}`,
+        `${apiUrl}/api/v2/post/toggle_post_like/${post._id}`,
         {},
         {
           headers: { Authorization: `Bearer ${cookies.token}` },
@@ -203,7 +204,7 @@ const BookMark = () => {
   const bookMarks = async (id) => {
     try {
       await axios.post(
-        `http://localhost:8000/api/v2/auth/toggleSavedPost/${id}`,
+        `${apiUrl}/api/v2/auth/toggleSavedPost/${id}`,
         {},
         {
           headers: { Authorization: `Bearer ${cookies.token}` },
@@ -236,7 +237,7 @@ const BookMark = () => {
 
       // إرسال البيانات إلى API
       const res = await axios.post(
-        `http://localhost:8000/api/v2/post/post_3_chick`, // URL الخاص بالـ API
+        `${apiUrl}/api/v2/post/post_3_chick`, // URL الخاص بالـ API
         {
           postId: IdPost,
           answers,
@@ -264,7 +265,7 @@ const BookMark = () => {
 
       // إرسال البيانات إلى API
       const res = await axios.post(
-        `http://localhost:8000/api/v2/post/post_2_chick`, // URL الخاص بالـ API
+        `${apiUrl}/api/v2/post/post_2_chick`, // URL الخاص بالـ API
         {
           postId: IdPost,
           answers,
@@ -314,7 +315,7 @@ const BookMark = () => {
 
       // إرسال البيانات إلى API
       const res = await axios.post(
-        `http://localhost:8000/api/v2/post/post_4_chick`, // URL الخاص بالـ API
+        `${apiUrl}/api/v2/post/post_4_chick`, // URL الخاص بالـ API
         {
           postId: IdPost,
           answers,
@@ -482,7 +483,7 @@ const BookMark = () => {
                             <img
                               src={
                                 post.post.user
-                                  ? `http://localhost:8000/user/${post.post.user.profilImage}`
+                                  ? `${apiUrl}/user/${post.post.user.profilImage}`
                                   : "/image/pngegg.png"
                               }
                               alt=""
@@ -545,7 +546,7 @@ const BookMark = () => {
                                   <img
                                     src={
                                       pos
-                                        ? `http://localhost:8000/posts/${pos.postImage}`
+                                        ? `${apiUrl}/posts/${pos.postImage}`
                                         : null
                                     }
                                     alt={`Image ${pos._id}`}
@@ -554,7 +555,7 @@ const BookMark = () => {
                                     id={pos._id}
                                     src={
                                       pos
-                                        ? `http://localhost:8000/posts/${pos.postAudio}`
+                                        ? `${apiUrl}/posts/${pos.postAudio}`
                                         : null
                                     }
                                   ></audio>
@@ -690,11 +691,11 @@ const BookMark = () => {
                                       <img
                                         src={
                                           com.user_comment?.profilImage
-                                            ? com.user_comment.profilImage.startsWith(
+                                            ? com.user_comment.profilImage?.startsWith(
                                               "http"
                                             )
                                               ? com.user_comment.profilImage
-                                              : `http://localhost:8000/user/${com.user_comment.profilImage}`
+                                              : `${apiUrl}/user/${com.user_comment.profilImage}`
                                             : "/image/pngegg.png"
                                         }
                                         alt={`Image of ${com.user_comment?.name || "user"
@@ -738,7 +739,7 @@ const BookMark = () => {
                             <img
                               src={
                                 post.post.user
-                                  ? `http://localhost:8000/user/${post.post.user.profilImage}`
+                                  ? `${apiUrl}/user/${post.post.user.profilImage}`
                                   : "/image/pngegg.png"
                               }
                               alt={`Image of ${post.post.name}`}
@@ -829,7 +830,10 @@ const BookMark = () => {
                                   // ما تعمل refetch أو invalidateQueries هون، أو:
                                   queryClient.invalidateQueries(['AllPost']);
             
-                                  setrelod(false);
+                                        setTimeout(() => {
+                        
+                        setrelod(false);
+                      }, 1500);
                                 } catch (error) {
                                   console.error("فشل تحديث الجواب:", error);
                                 }
@@ -1028,11 +1032,11 @@ const BookMark = () => {
                                       <img
                                         src={
                                           com.user_comment?.profilImage
-                                            ? com.user_comment.profilImage.startsWith(
+                                            ? com.user_comment.profilImage?.startsWith(
                                               "http"
                                             )
                                               ? com.user_comment.profilImage
-                                              : `http://localhost:8000/user/${com.user_comment.profilImage}`
+                                              : `${apiUrl}/user/${com.user_comment.profilImage}`
                                             : "/image/pngegg.png"
                                         }
                                         alt={`Image of ${com.user_comment?.name || "user"
@@ -1076,7 +1080,7 @@ const BookMark = () => {
                             <img
                               src={
                                 post.post.user
-                                  ? `http://localhost:8000/user/${post.post.user.profilImage}`
+                                  ? `${apiUrl}/user/${post.post.user.profilImage}`
                                   : "/image/pngegg.png"
                               }
                               alt=""
@@ -1173,7 +1177,10 @@ const BookMark = () => {
                               try {
                                 await chick_post_3(post.post._id, questionId, answer ? true : false);
                                 queryClient.invalidateQueries(["AllPost"]);
-                                setrelod(false);
+                                     setTimeout(() => {
+                        
+                        setrelod(false);
+                      }, 1500);
             
                               } catch (err) {
                                 console.error("فشل إرسال الإجابة:", err);
@@ -1370,11 +1377,11 @@ const BookMark = () => {
                                       <img
                                         src={
                                           com.user_comment?.profilImage
-                                            ? com.user_comment.profilImage.startsWith(
+                                            ? com.user_comment.profilImage?.startsWith(
                                               "http"
                                             )
                                               ? com.user_comment.profilImage
-                                              : `http://localhost:8000/user/${com.user_comment.profilImage}`
+                                              : `${apiUrl}/user/${com.user_comment.profilImage}`
                                             : "/image/pngegg.png"
                                         }
                                         alt={`Image of ${com.user_comment?.name || "user"
@@ -1418,7 +1425,7 @@ const BookMark = () => {
                             <img
                               src={
                                 post.post.user
-                                  ? `http://localhost:8000/user/${post.post.user.profilImage}`
+                                  ? `${apiUrl}/user/${post.post.user.profilImage}`
                                   : "/image/pngegg.png"
                               }
                               alt=""
@@ -1502,7 +1509,10 @@ const BookMark = () => {
                               try {
                                 await chick_post_4(post.post._id, questionId, answer);
                                 queryClient.invalidateQueries(["AllPost"]);
-                                setrelod(false);
+                                    setTimeout(() => {
+                        
+                        setrelod(false);
+                      }, 1500);
             
                               } catch (err) {
                                 console.error("فشل إرسال الإجابة:", err);
@@ -1531,7 +1541,7 @@ const BookMark = () => {
             
                                       <div className="img_ans">
                                         <img
-                                          src={`http://localhost:8000/posts/${item.img}`}
+                                          src={`${apiUrl}/posts/${item.img}`}
                                           alt="Question"
                                         />
                                         {item.question ? <h2>{item.question}</h2> : null}
@@ -1705,11 +1715,11 @@ const BookMark = () => {
                                       <img
                                         src={
                                           com.user_comment?.profilImage
-                                            ? com.user_comment.profilImage.startsWith(
+                                            ? com.user_comment.profilImage?.startsWith(
                                               "http"
                                             )
                                               ? com.user_comment.profilImage
-                                              : `http://localhost:8000/user/${com.user_comment.profilImage}`
+                                              : `${apiUrl}/user/${com.user_comment.profilImage}`
                                             : "/image/pngegg.png"
                                         }
                                         alt={`Image of ${com.user_comment?.name || "user"
@@ -1753,9 +1763,9 @@ const BookMark = () => {
                             <img
                               src={
                                 post.post.user
-                                  ? post.post.user.profilImage.startsWith("http")
+                                  ? post.post.user.profilImage?.startsWith("http")
                                     ? post.post.user.profilImage
-                                    : `http://localhost:8000/user/${post.post.user.profilImage}`
+                                    : `${apiUrl}/user/${post.post.user.profilImage}`
                                   : "/image/pngegg.png"
                               }
                               alt={`Image of ${post.post.user.name}`}
@@ -1825,7 +1835,7 @@ const BookMark = () => {
                                       post.post.video_post.forEach((video, index) => {
                                         allMedia.push({
                                           type: "video",
-                                          src: `http://localhost:8000/posts/${video}`,
+                                          src: `${apiUrl}/posts/${video}`,
                                           key: `video-${index}`,
                                         });
                                       });
@@ -1836,7 +1846,7 @@ const BookMark = () => {
                                       post.post.img_post.forEach((img, index) => {
                                         allMedia.push({
                                           type: "image",
-                                          src: `http://localhost:8000/posts/${img}`,
+                                          src: `${apiUrl}/posts/${img}`,
                                           key: `img-${index}`,
                                         });
                                       });
@@ -2124,11 +2134,11 @@ const BookMark = () => {
                                       <img
                                         src={
                                           com.user_comment?.profilImage
-                                            ? com.user_comment.profilImage.startsWith(
+                                            ? com.user_comment.profilImage?.startsWith(
                                               "http"
                                             )
                                               ? com.user_comment.profilImage
-                                              : `http://localhost:8000/user/${com.user_comment.profilImage}`
+                                              : `${apiUrl}/user/${com.user_comment.profilImage}`
                                             : "/image/pngegg.png"
                                         }
                                         alt={`Image of ${com.user_comment?.name || "user"
@@ -2174,7 +2184,7 @@ const BookMark = () => {
                             <img
                               src={
                                 post.post.user
-                                  ? `http://localhost:8000/user/${post.post.user.profilImage}`
+                                  ? `${apiUrl}/user/${post.post.user.profilImage}`
                                   : "/image/pngegg.png"
                               }
                               alt=""
@@ -2359,11 +2369,11 @@ const BookMark = () => {
                                       <img
                                         src={
                                           com.user_comment?.profilImage
-                                            ? com.user_comment.profilImage.startsWith(
+                                            ? com.user_comment.profilImage?.startsWith(
                                               "http"
                                             )
                                               ? com.user_comment.profilImage
-                                              : `http://localhost:8000/user/${com.user_comment.profilImage}`
+                                              : `${apiUrl}/user/${com.user_comment.profilImage}`
                                             : "/image/pngegg.png"
                                         }
                                         alt={`Image of ${com.user_comment?.name || "user"

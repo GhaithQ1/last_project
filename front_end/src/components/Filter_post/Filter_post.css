@@ -11,7 +11,7 @@
 @media(max-width:767px){
     .Filter_post{
         border-radius: 0;
-        display: none;
+        /* display: none; */
     }
 }
 .Filter_post .button_filter{

@@ -10,6 +10,7 @@ import Info_menu from "../Info_menu/Info_menu";
 import Shools from "../Shools/Shools";
 import { useQueryClient } from "@tanstack/react-query";
 const Create_Bost_image_and_answer = () => {
+  const apiUrl = import.meta.env.VITE_API_URL;
   const queryClient = useQueryClient();
   const [questions, setQuestions] = useState([
     { img: null, word_1: "", word_2: "", word_3: "", word_4: "", correctWord: "" ,question: ""}
@@ -106,7 +107,7 @@ const Create_Bost_image_and_answer = () => {
   console.log(pair[0], pair[1]);
 }
       // إرسال البيانات إلى الخادم
-      await axios.post('http://localhost:8000/api/v2/post/post_4', formData, {
+      await axios.post(`${apiUrl}/api/v2/post/post_4`, formData, {
         headers: {
           Authorization: `Bearer ${cookies.token}`,
         },

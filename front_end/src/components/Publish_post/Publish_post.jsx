@@ -14,7 +14,7 @@ const Publish_post = () => {
 
 
 
-
+const apiUrl = import.meta.env.VITE_API_URL;
 
 
 
@@ -81,7 +81,7 @@ const Publish_post = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/v2/post/post",
+        `${apiUrl}/api/v2/post/post`,
         formData,
         {
           headers: {
@@ -91,7 +91,6 @@ const Publish_post = () => {
         }
       );
 
-      console.log("تم الإرسال:", response.data);
 queryClient.invalidateQueries(["AllPost"]);
       // ✅ تصفية الفورم بعد الإرسال
       setImageFiles([]);
@@ -147,7 +146,7 @@ queryClient.invalidateQueries(["AllPost"]);
             MyData?.profilImage
               ? MyData?.profilImage.startsWith("http")
                 ? MyData?.profilImage
-                : `http://localhost:8000/user/${MyData?.profilImage}`
+                : `${apiUrl}/user/${MyData?.profilImage}`
               : "/image/pngegg.png"
           }
           alt={`Image of ${MyData?.name}`}
@@ -169,16 +168,16 @@ queryClient.invalidateQueries(["AllPost"]);
       <div className="icon_publish">
         <div className="icon_text_publish"
           onClick={() => videoInputRef.current.click()}>
-          <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-play-icon lucide-square-play"><rect width="18" height="18" x="3" y="3" rx="2" /><path d="m9 8 6 4-6 4Z" /></svg>
+          <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-square-play-icon lucide-square-play"><rect width="18" height="18" x="3" y="3" rx="2" /><path d="m9 8 6 4-6 4Z" /></svg>
           <p>Video</p>
         </div>
         <div className="icon_text_publish"
           onClick={() => imageInputRef.current.click()}>
-<svg  xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 8h.01" /><path d="M3 6a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3v-12z" /><path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l5 5" /><path d="M14 14l1 -1c.928 -.893 2.072 -.893 3 0l3 3" /></svg>
+<svg  xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 8h.01" /><path d="M3 6a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3v-12z" /><path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l5 5" /><path d="M14 14l1 -1c.928 -.893 2.072 -.893 3 0l3 3" /></svg>
           <p>Photo</p>
         </div>
         <div className="icon_text_publish">
-<svg  xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M9 7l1 0" /><path d="M9 13l6 0" /><path d="M13 17l2 0" /></svg>          <p>File</p>
+<svg  xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M9 7l1 0" /><path d="M9 13l6 0" /><path d="M13 17l2 0" /></svg>          <p>File</p>
         </div>
         <input
           type="file"

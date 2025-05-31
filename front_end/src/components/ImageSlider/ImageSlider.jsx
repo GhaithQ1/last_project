@@ -12,13 +12,14 @@ const ImageSlider = () => {
   const [cookies, setCookies] = useCookies(["token"]);
   const Navigate = useNavigate();
   const { setGatUserById } = useUser();
+   const apiUrl = import.meta.env.VITE_API_URL;
 
   const [AllImageShoole, SetAllImageShoole] = useState([]);
   const [load_img, SetLoad_img] = useState(false);
   useEffect(() => {
     SetLoad_img(true)
     axios
-      .get(`http://localhost:8000/api/v2/user`, {
+      .get(`${apiUrl}/api/v2/user`, {
         headers: {
           Authorization: `Bearer ${cookies.token}`,
         },
@@ -71,7 +72,7 @@ const ImageSlider = () => {
               className="log"
                src={
                   src.profilImage
-                    ? `http://localhost:8000/user/${src.profilImage}`
+                    ? `${apiUrl}/user/${src.profilImage}`
                     : "/image/test.jpg"
                 } alt="" />
               
@@ -81,7 +82,7 @@ const ImageSlider = () => {
                 }}
                 src={
                   src.Cover_image
-                    ? `http://localhost:8000/user/${src.Cover_image}`
+                    ? `${apiUrl}/user/${src.Cover_image}`
                     : "/image/test.jpg"
                 }
                 alt={`Image of ${src.name}`}

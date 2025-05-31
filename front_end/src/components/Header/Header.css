@@ -257,13 +257,15 @@ header .container .header_respon .profile .info_requsts_header h3 {
 }
 
   .button_req p>.accept_req_friend {
-    background-color: rgb(220 252 231 / var(--tw-bg-opacity, 1));
-    color: rgb(21 128 61 / var(--tw-text-opacity, 1));
+    background-color: rgb(220 252 231 / var(--tw-bg-opacity, 1)) !important;
+    color: rgb(21 128 61 / var(--tw-text-opacity, 1)) !important;
+    width: 15px !important;
 }
 
   .button_req p>.reject_req_friend {
-    background-color: rgb(254 226 226 / var(--tw-bg-opacity, 1));
-    color: rgb(239 68 68 / var(--tw-text-opacity, 1));
+    background-color: rgb(254 226 226 / var(--tw-bg-opacity, 1)) !important;
+    color: rgb(239 68 68 / var(--tw-text-opacity, 1)) !important;
+    width: 15px !important;
 }
 
   .button_req button {

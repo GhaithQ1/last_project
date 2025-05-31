@@ -56,6 +56,8 @@ const Sign_school = () => {
     }));
   };
 
+  const apiUrl = import.meta.env.VITE_API_URL;
+
   const validateForm = () => {
     const newErrors = {};
     if (!formData.name) newErrors.name = "Name is required";
@@ -93,7 +95,7 @@ const Sign_school = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/v2/auth/sign_up",
+        `${apiUrl}/api/v2/auth/sign_up`,
         newFormData
       );
       setSuccessMessage(response.data.message);

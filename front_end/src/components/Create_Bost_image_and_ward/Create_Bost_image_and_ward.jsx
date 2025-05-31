@@ -14,6 +14,7 @@ const Create_Bost_image_and_ward = () => {
   const [cookies] = useCookies(["token"]);
   const navigate = useNavigate();
   const [Load_butt, setLoad_butt] = useState(false);
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   // الحالة لتتبع النماذج المضافة
   const [forms, setForms] = useState([{ image: null, audio: null, word: "" }]);
@@ -56,7 +57,7 @@ const Create_Bost_image_and_ward = () => {
     });
 
     axios
-      .post("http://localhost:8000/api/v2/post/post_1", formData, {
+      .post(`${apiUrl}/api/v2/post/post_1`, formData, {
         headers: {
           Authorization: `Bearer ${cookies.token}`,
         },

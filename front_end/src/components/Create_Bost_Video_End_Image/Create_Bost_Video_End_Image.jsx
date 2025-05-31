@@ -24,6 +24,8 @@ const Create_Bost_Video_and_image = () => {
   const [imageFiles, setImageFiles] = useState([]);
   const [videoFiles, setVideoFiles] = useState([]);
 
+  const apiUrl = import.meta.env.VITE_API_URL;
+
   const imageInputRef = useRef(null);
   const videoInputRef = useRef(null);
 
@@ -76,7 +78,7 @@ const Create_Bost_Video_and_image = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/v2/post/post",
+        `${apiUrl}/api/v2/post/post`,
         formData,
         {
           headers: {

@@ -18,9 +18,11 @@ const Create_Bost_Ifrem = () => {
   const [des,SetDes] = useState("");
   const [dimensions,Setdimensions] = useState("square");
   const [Load_butt, setLoad_butt] = useState(false);
+
   const Ifrem = ()=>{
+    const apiUrl = import.meta.env.VITE_API_URL;
     setLoad_butt(true);
-    axios.post('http://localhost:8000/api/v2/post/post_6',{
+    axios.post(`${apiUrl}/api/v2/post/post_6`,{
       url,
       des,
       dimensions
